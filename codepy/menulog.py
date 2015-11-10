@@ -15,9 +15,9 @@ logger.setLevel(logging.DEBUG)
 
 
 def info(msg):
-    print u'[info]%s'% msg
+    print u'[info@szy]%s'% msg
     logger.info(msg)
 
 def debug(msg):
-    print u'[debug]%s'% msg
+    print u'[debug@szy]%s'% msg
     logger.debug(msg)

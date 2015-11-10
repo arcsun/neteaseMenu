@@ -14,7 +14,7 @@ urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 class Background:
     def __init__(self):
         self.frequency = 3600         # 间隔(秒)
-        self.interval = 100           # 每次爬的id数量
+        self.interval = 150           # 每次爬的id数量
         self.firstRun = True          # 是否在程序开始后先执行一次
         self.running = False          # 是否正在运行(否则同一秒会重复执行多次)
         self.count = 0
@@ -105,7 +105,12 @@ class Background:
                     self.usedId = self.nowId
             self.nowId += 1
 
-        if self.usedId > self.startId:
+        if self.maybe and max(self.maybe) > max(self.cache.values()):
+            # 例如先更新了15956但是样式错误, 然后用过的id更新至16xxx, 最后又把15958替换成了正确的菜单
+            menulog.info(u'更新起点至可能的ID:%d'% max(self.maybe))
+            self.startId = max(self.maybe)
+
+        elif self.usedId > self.startId:
             menulog.info(u'更新起点至%d'% self.usedId)
             self.startId = self.usedId
 

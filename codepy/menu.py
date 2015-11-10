@@ -1,6 +1,7 @@
 #coding=utf-8
 import time
 import cPickle as pickle
+import copy
 import menulog
 
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
@@ -29,20 +30,22 @@ class Menu:
             return urlhead + str(self.cache.get(targetday))
 
         def getMaybe():
-            backup = self.maybe
+            backup = copy.deepcopy(self.maybe)
             self.result += u'\t 可能的url: '
             first = True
             for mid in backup:
-                if mid >= self.startId:
+                if mid >= max(self.cache.values()):
                     if first:
                         first = False
-                        self.result += u'\t' + getUrl(mid)
+                        self.result += u'\t' + urlhead+ str(mid)
                     else:
                         self.result += '\t' + str(mid)
                 else:
                     self.maybe.remove(mid)
             if not self.maybe:
                 self.result += 'None'
+            else:
+                menulog.debug(self.result)
 
         try:
             f = file('record.pkl', 'rb')
@@ -65,5 +68,6 @@ class Menu:
             menulog.info('cache not found @%s'% getTime())
             if self.result == u'未找到菜单':
                 getMaybe()
+
             self.result += u'\t下次刷新:约%d秒后'% (self.lastQuery + frequency - self.now)
             return self.result
