@@ -6,6 +6,7 @@ from codepy import menulog
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def hello_world():
     return 'Netease Menu!'
@@ -20,6 +21,7 @@ def menu(day= 0):
         return redirect(url)
     else:
         return url
+
 
 @app.route('/menu/clear')
 def clearMaybe():
@@ -73,7 +75,6 @@ def start(startid= 15900):
         msg = u'缓存读取错误'
         menulog.info(msg)
         return msg
-
 
 
 if __name__ == '__main__':
