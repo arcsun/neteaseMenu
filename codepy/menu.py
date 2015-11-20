@@ -13,8 +13,6 @@ class Menu:
         self.today = int(time.strftime('%y%m%d',time.localtime(time.time())))  # 151022
         if day == 1:
             self.today += 1
-        elif day == 0 or 100:
-            pass
         elif day != 0 and day > 151026 :
             self.today = day
 
