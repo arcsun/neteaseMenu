@@ -8,7 +8,8 @@ from codepy import menulog
 pattern_title = r"<title>(.+)</title>"
 pattern_weekday = ur"（星期(.)）"
 pattern_year = ur'20(\d\d)-'
-pattern_monthday = r'>(\d+)</span>'
+pattern_month = r'>(\d+)</span>'
+pattern_day = ur'月(\d+)日'
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 
 class Background:
@@ -85,8 +86,8 @@ class Background:
             if text.find(u'今日菜单') != -1:
                 try:
                     year = re.findall(pattern_year, text)[0]
-                    month = re.findall(pattern_monthday, text)[0]
-                    day = re.findall(pattern_monthday, text)[1]
+                    month = re.findall(pattern_month, text)[0]
+                    day = re.findall(pattern_day, text)[0]
                     thisday = int(year+month+day)
                     self.startId = self.nowId
                     self.cache[thisday] = self.nowId

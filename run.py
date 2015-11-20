@@ -21,6 +21,32 @@ def menu(day= 0):
     else:
         return url
 
+@app.route('/menu/clear')
+def clearMaybe():
+    # 清空maybe
+    try:
+        f = file('record.pkl', 'rb')
+        startId = pickle.load(f)
+        lastQuery = pickle.load(f)
+        cache = pickle.load(f)
+        maybe = pickle.load(f)
+        maybe = []
+        f.close()
+
+        f = file('record.pkl', 'wb')
+        pickle.dump(startId, f, 0)
+        pickle.dump(lastQuery, f, 0)
+        pickle.dump(cache, f, 0)
+        pickle.dump(maybe, f, 0)
+        f.close()
+        msg = u'清空maybe'
+        menulog.info(msg)
+        return msg
+    except (IOError, EOFError):
+        msg = u'缓存读取错误'
+        menulog.info(msg)
+        return msg
+
 
 @app.route('/start/<int:startid>')
 def start(startid= 15900):
