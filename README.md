@@ -5,7 +5,7 @@ http://43.241.220.139:5000/menu/1
 http://43.241.220.139:5000/menu/151104  
 
 运行环境:  
-  python 2.7
+  python 2.7  
   Flask==0.10.1  
   Jinja2==2.8  
   Werkzeug==0.10.4  
