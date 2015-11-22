@@ -86,8 +86,12 @@ class Background:
             if text.find(u'今日菜单') != -1:
                 try:
                     year = re.findall(pattern_year, text)[0]
-                    month = re.findall(pattern_month, text)[0]
-                    day = re.findall(pattern_day, text)[0]
+                    monthday = re.findall(pattern_month, text)
+                    month = monthday[0]
+                    if len(monthday) > 1:
+                        day = monthday[1]
+                    else:
+                        day = re.findall(pattern_day, text)[0]
                     thisday = int(year+month+day)
                     self.startId = self.nowId
                     self.cache[thisday] = self.nowId
