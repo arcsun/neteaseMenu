@@ -1,8 +1,9 @@
-#网易(杭州)菜单 v1.2.1
+#网易(杭州)菜单 v1.3
 示例网址：  
 http://43.241.220.139:5000/menu/0  
 http://43.241.220.139:5000/menu/1  
-http://43.241.220.139:5000/menu/151104  
+http://43.241.220.139:5000/menu/151104
+http://43.241.220.139:5000/menu/info 
 
 运行环境:  
   python 2.7  
@@ -12,7 +13,7 @@ http://43.241.220.139:5000/menu/151104
   
 bgtask.py:  
   爬虫, 每小时抓取一次，需(首先)单独执行: python bgtask.py &  
-  抓取到的url等信息存储在record.pkl中(使用cPickle)  
+  抓取到的url等信息存储在文件datafile中  
   
 run.py:  
   web程序入口, python run.py 或使用gunicorn等启动  
