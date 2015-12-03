@@ -1,7 +1,7 @@
 #coding=utf-8
 import time
-import cPickle as pickle
 import copy
+import anydbm as dbm
 import menulog
 
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
@@ -11,10 +11,17 @@ frequency = 3600
 class Menu:
     def __init__(self, day= 0):
         self.today = int(time.strftime('%y%m%d',time.localtime(time.time())))  # 151022
-        if day == 1:
+        self.returnMaybe = False
+        if 100> day >0:
             self.today += 1
-        elif day != 0 and day > 151026 :
+        elif day == 0:
+            pass
+        elif day > 151026:
             self.today = day
+        elif day == 100:
+            self.returnMaybe = True
+
+        print self.today
 
         self.startId = 0
         self.result = u'未找到菜单'
@@ -22,11 +29,6 @@ class Menu:
         self.now = int(time.time())
         self.cache = {}         # {151019:15163}  # 日期:id
         self.maybe = []         # 爬到的报错的页面
-
-        if day == 100:
-            self.returnMaybe = True
-        else:
-            self.returnMaybe = False
         self.maybeUrl = ''
 
 
@@ -60,13 +62,13 @@ class Menu:
                 menulog.debug(self.result)
 
         try:
-            f = file('record.pkl', 'rb')
-            self.startId = pickle.load(f)
-            self.lastQuery = pickle.load(f)
-            self.cache = pickle.load(f)
-            self.maybe = pickle.load(f)
-            f.close()
-        except (IOError, EOFError):
+            db = dbm.open('datafile', 'r')
+            self.startId = eval(db['startId'])
+            self.lastQuery = eval(db['lastQuery'])
+            self.cache = eval(db['cache'])
+            self.maybe = eval(db['maybe'])
+            db.close()
+        except (IOError, KeyError):
             msg = u'未找到缓存数据'
             menulog.debug(msg)
             return msg
@@ -77,9 +79,6 @@ class Menu:
             return getUrl()
         else:
             # 缓存中查不到
-            print self.returnMaybe
-
-
             menulog.info('cache not found @%s'% getTime())
             if self.result == u'未找到菜单':
                 getMaybe()

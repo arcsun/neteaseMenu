@@ -1,11 +1,10 @@
 #coding=utf-8
 from flask import Flask, redirect
-import webbrowser
-import cPickle as pickle
 from codepy import menulog
+import anydbm as dbm
+import webbrowser
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def hello_world():
@@ -13,9 +12,9 @@ def hello_world():
 
 
 @app.route('/menu/<int:day>')
-def menu(day= 0):
-    # 今天0, 明天1...
-    from codepy import menu
+def menu(day=0):
+    # 0今天, 1明天, 151202指定日期
+    from codepy import menu         # reload(menu)?
     url = menu.Menu(day).process()
     if url.startswith('http'):
         return redirect(url)
@@ -23,58 +22,57 @@ def menu(day= 0):
         return url
 
 
+@app.route('/menu/info')
+def info():
+    db = dbm.open('datafile', 'r')
+    msg = str(db)
+    db.close()
+    return msg
+
+
 @app.route('/menu/clear')
 def clearMaybe():
-    # 清空maybe
+    # 清空可能的菜单(maybe=[])
     try:
-        f = file('record.pkl', 'rb')
-        startId = pickle.load(f)
-        lastQuery = pickle.load(f)
-        cache = pickle.load(f)
-        maybe = pickle.load(f)
-        maybe = []
-        f.close()
-
-        f = file('record.pkl', 'wb')
-        pickle.dump(startId, f, 0)
-        pickle.dump(lastQuery, f, 0)
-        pickle.dump(cache, f, 0)
-        pickle.dump(maybe, f, 0)
-        f.close()
+        db = dbm.open('datafile', 'c')
+        db['maybe'] = '[]'
+        db.close()
         msg = u'清空maybe'
         menulog.info(msg)
         return msg
-    except (IOError, EOFError):
+    except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
         return msg
 
 
-@app.route('/start/<int:startid>')
-def start(startid= 15900):
-    # 重置起始查找点为指定值
+@app.route('/menu/start/<int:startid>')
+def start(startid= 17000):
+    # 设置起始查找点为指定值
     try:
-        f = file('record.pkl', 'rb')
-        startId = pickle.load(f)
-        startId = startid
-        lastQuery = pickle.load(f)
-        cache = pickle.load(f)
-        maybe = pickle.load(f)
-        f.close()
-
-        f = file('record.pkl', 'wb')
-        pickle.dump(startId, f, 0)
-        pickle.dump(lastQuery, f, 0)
-        pickle.dump(cache, f, 0)
-        pickle.dump(maybe, f, 0)
-        f.close()
+        db = dbm.open('datafile', 'c')
+        db['startId'] = str(startid)
+        db.close()
         msg = u'设置查找起点ID为:%d'% startid
         menulog.info(msg)
         return msg
-    except (IOError, EOFError):
+    except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
         return msg
+
+
+@app.route('/menu/add/<int:day>/<int:mid>')
+def add(day= 151203, mid= 17063):
+    # 手动添加一个菜单（偶尔发布者会填错日期）
+    db = dbm.open('datafile', 'c')
+    cache = eval(db['cache'])
+    cache[day] = mid
+    db['cache'] = str(cache)
+    msg = u'更新%s的菜单id为%s'% (day, mid)
+    menulog.info(msg)
+    db.close()
+    return msg
 
 
 if __name__ == '__main__':
