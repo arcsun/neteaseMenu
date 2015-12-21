@@ -7,21 +7,16 @@ import menulog
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 frequency = 3600
 
-
 class Menu:
     def __init__(self, day= 0):
         self.today = int(time.strftime('%y%m%d',time.localtime(time.time())))  # 151022
         self.returnMaybe = False
-        if 100> day >0:
-            self.today += 1
-        elif day == 0:
-            pass
+        if 0 < day < 100:
+            self.today = self.getNextDay(self.today, day)
         elif day > 151026:
             self.today = day
         elif day == 100:
             self.returnMaybe = True
-
-        print self.today
 
         self.startId = 0
         self.result = u'未找到菜单'
@@ -30,6 +25,28 @@ class Menu:
         self.cache = {}         # {151019:15163}  # 日期:id
         self.maybe = []         # 爬到的报错的页面
         self.maybeUrl = ''
+        self.tmp = 0
+
+
+    def getNextDay(self, today, step= 1):
+        def calcu():
+            lastDays = {'0131': '0201', '0229': '0301', '0331': '0401', '0430': '0501', '0531': '0601', '0630': '0701',
+                        '0731': '0801', '0831': '0901', '0930': '1001', '1031': '1101', '1130': '1201', '1231': '0101'}  # 16年是闰年，暂把2月设成0229
+            now = str(self.tmp)
+            year = now[0:2]      # 15
+            monthday = now[2:]   # 1221
+            if monthday in lastDays.keys():
+                if monthday == '1231':
+                    year = str(int(year) + 1)
+                tomorrow = lastDays[monthday]
+                self.tmp = int(year + tomorrow)
+            else:
+                self.tmp = int(now)+1
+
+        self.tmp = today
+        for i in range(step):
+            calcu()
+        return self.tmp
 
 
     def process(self):

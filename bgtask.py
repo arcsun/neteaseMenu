@@ -21,7 +21,7 @@ class Background:
         self.back = 50                # 每次从self.startId - self.back开始查找，防止被占坑
         self.firstRun = True          # 是否在程序开始后先执行一次
 
-        self.today = int(time.strftime('%y%m%d',time.localtime()))
+        self.today = int(time.strftime('%y%m%d', time.localtime()))
         self.running = False          # 是否正在运行(否则同一秒会重复执行多次)
         self.startId = 0
         self.count = 0
@@ -116,9 +116,18 @@ class Background:
             db['lastQuery'] = str(self.lastQuery)
             db['cache'] = str(self.cache)
             db['maybe'] = str(self.maybe)
-            db.close()
             menulog.info(u'第%d次查找结束'% self.count)
 
+            self.cache = eval(db['cache'])
+            future = []
+            for day in self.cache.keys():
+                if day >= self.today:
+                    future.append(day)
+            future.sort()
+            db['future'] = str(future)
+            menulog.info(u'更新今后已找到的菜单列表')
+
+            db.close()
         except (IOError, EOFError):
             menulog.info(u'缓存读取/创建异常')
         finally:
