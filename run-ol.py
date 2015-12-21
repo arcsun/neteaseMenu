@@ -1,5 +1,5 @@
 #coding=utf-8
-from flask import Flask, redirect
+from flask import Flask, redirect, render_template, request
 from codepy import menulog
 import anydbm as dbm
 
@@ -11,15 +11,34 @@ def hello_world():
     return 'Netease Menu!'
 
 
-@app.route('/menu/<int:day>')
+@app.route('/menu/<int:day>', methods = ['GET', 'POST'])
 def menu(day=0):
     # 0今天, 1明天, 151202指定日期
-    from codepy import menu         # reload(menu)?
+    from codepy import menu
+    if request.method == 'POST':
+        day = int(request.form['day'])
     url = menu.Menu(day).process()
     if url.startswith('http'):
         return redirect(url)
     else:
         return url
+
+
+@app.route('/menu')
+def menuList():
+    try:
+        db = dbm.open('datafile', 'c')
+        cache = eval(db['cache'])
+        future = eval(db['future'])
+        vals = {}
+        for day in future:
+            vals[day] = cache[day]
+        db.close()
+        return render_template('menu.html', vals = vals)
+    except (IOError, KeyError):
+        msg = u'缓存读取错误'
+        menulog.info(msg)
+        return msg
 
 
 @app.route('/menu/info')

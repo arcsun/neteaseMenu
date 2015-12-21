@@ -1,5 +1,5 @@
 #coding=utf-8
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect, render_template, request
 from codepy import menulog
 import anydbm as dbm
 import webbrowser
@@ -11,10 +11,12 @@ def hello_world():
     return 'Netease Menu!'
 
 
-@app.route('/menu/<int:day>')
+@app.route('/menu/<int:day>', methods = ['GET', 'POST'])
 def menu(day=0):
     # 0今天, 1明天, 151202指定日期
-    from codepy import menu         # reload(menu)?
+    from codepy import menu
+    if request.method == 'POST':
+        day = int(request.form['day'])
     url = menu.Menu(day).process()
     if url.startswith('http'):
         return redirect(url)
@@ -93,5 +95,5 @@ def add(day= 151203, mid= 17063):
 
 
 if __name__ == '__main__':
-    webbrowser.open('http://127.0.0.1/menu/0')
+    webbrowser.open('http://127.0.0.1/menu')
     app.run(port= 80)

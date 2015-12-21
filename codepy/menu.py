@@ -11,12 +11,14 @@ class Menu:
     def __init__(self, day= 0):
         self.today = int(time.strftime('%y%m%d',time.localtime(time.time())))  # 151022
         self.returnMaybe = False
-        if 0 < day < 100:
+        if 0 <= day <= 1000:
             self.today = self.getNextDay(self.today, day)
         elif day > 151026:
             self.today = day
-        elif day == 100:
+        elif day > 1000:
             self.returnMaybe = True
+
+
 
         self.startId = 0
         self.result = u'未找到菜单'
@@ -104,4 +106,5 @@ class Menu:
                 return self.maybeUrl
             else:
                 self.result += u'\t下次刷新:约%d秒后'% (self.lastQuery + frequency - self.now)
+                self.result += u'\t日期:%s'% self.today
                 return self.result

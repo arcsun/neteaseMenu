@@ -17,7 +17,18 @@
 <h4>暂无</h4>
 {% endif %}
 
+<hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+
 <h3>自定义查询</h3>
+<form action="/menu/0" method="post">
+  <input type="text" name="day" />
+  <input type="submit" value="查询" />
+</form>
+
+<h4>参数说明</h4>
+<p>0-1000: 多少天之后的菜单</p>
+<p>1000-151025: 跳转到可能的菜单页(适用于抓取错误时)</p>
+<p>>=151026:  指定日期的菜单</p>
 
 
 </body>
