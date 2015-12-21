@@ -1,5 +1,5 @@
 #coding=utf-8
-from flask import Flask, redirect
+from flask import Flask, redirect, render_template
 from codepy import menulog
 import anydbm as dbm
 import webbrowser
@@ -20,6 +20,23 @@ def menu(day=0):
         return redirect(url)
     else:
         return url
+
+
+@app.route('/menu')
+def menuList():
+    try:
+        db = dbm.open('datafile', 'c')
+        cache = eval(db['cache'])
+        future = eval(db['future'])
+        vals = {}
+        for day in future:
+            vals[day] = cache[day]
+        db.close()
+        return render_template('menu.html', vals = vals)
+    except (IOError, KeyError):
+        msg = u'缓存读取错误'
+        menulog.info(msg)
+        return msg
 
 
 @app.route('/menu/info')

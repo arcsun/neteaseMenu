@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>杭州菜单</title>
+</head>
+<body>
+<h3>菜单列表</h3>
+{% if vals %}
+<ul>
+    {% for key in vals.keys() %}
+    <li><a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[key] }}">{{ key }} </a></li>
+    {% endfor %}
+</ul>
+
+{% else %}
+<h4>暂无</h4>
+{% endif %}
+
+<h3>自定义查询</h3>
+
+
+</body>
+</html>
