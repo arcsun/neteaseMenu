@@ -126,7 +126,6 @@ class Background:
             future.sort()
             db['future'] = str(future)
             menulog.info(u'更新今后已找到的菜单列表')
-
             db.close()
         except (IOError, EOFError):
             menulog.info(u'缓存读取/创建异常')
