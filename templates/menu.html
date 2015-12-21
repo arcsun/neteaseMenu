@@ -17,11 +17,9 @@
 		<div class="col-md-10 column">
             <h3><b>菜单列表</b></h3>
             {% if vals %}
-            <ul>
                 {% for key in vals.keys() %}
-                <li><a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[key] }}">{{ key }} </a></li>
+                <h4><a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[key] }}">{{ key }} </a></h4>
                 {% endfor %}
-            </ul>
 
             {% else %}
             <h4>暂无</h4>
