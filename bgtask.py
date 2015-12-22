@@ -21,7 +21,7 @@ class Background:
         self.back = 50                # 每次从self.startId - self.back开始查找，防止被占坑
         self.firstRun = True          # 是否在程序开始后先执行一次
 
-        self.today = int(time.strftime('%y%m%d', time.localtime()))
+        self.today = 0
         self.running = False          # 是否正在运行(否则同一秒会重复执行多次)
         self.startId = 0
         self.count = 0
@@ -52,6 +52,7 @@ class Background:
 
     def process(self):
         self.count += 1
+        self.today = int(time.strftime('%y%m%d', time.localtime()))
         menulog.info(u'开始第%d次查找@%d'% (self.count, self.getTime()))
 
         try:
