@@ -34,7 +34,7 @@ def menuList():
         for day in future:
             vals[day] = cache[day]
         db.close()
-        return render_template('menu.html', vals = vals)
+        return render_template('menu.html', vals= vals, days= future)
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
