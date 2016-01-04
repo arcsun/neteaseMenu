@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>杭州菜单</title>
+    <title>菜单管理</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="SHORTCUT ICON" href="/static/panguMiniLogo.png">
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -15,48 +15,35 @@
 		</div>
 
 		<div class="col-md-10 column">
-            <h3><b>菜单列表</b></h3>
-            {% if days and vals %}
-                {% for day in days %}
-                <h4>&nbsp;<a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[day] }}">{{ day }} </a></h4>
-                {% endfor %}
-            {% else %}
-            <h4>暂无</h4>
-            {% endif %}
-
+            <h3><b>后台管理</b></h3>
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
 
-            <h3><b>自定义查询</b></h3>
-            <form action="/menu/0" method="post">
-              <input type="text" name="day" />
-              <input type="submit" value="查询" />
+            <h4>设置查找起点id</h4>
+            <form action="/menu/start/19000" method="post">
+              <input type="text" name="startid" />
+              <input type="submit" value="set" />
             </form>
-
-            <h4>参数说明</h4>
-            <p>0-1000: 多少天之后的菜单</p>
-            <p>1000-151025: 跳转到可能的菜单页(页面出错时可尝试)</p>
-            <p>>=151026:  指定日期的菜单</p>
-
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
 
-            <h4>今日菜单: <a href="http://43.241.220.139:5000/menu/0">http://43.241.220.139:5000/menu/0</a></h4>
-            <h4>今日菜单短链: <a href="http://t.im/today">http://t.im/today</a></h4>
-            <h4>本页短链1: <a href="http://dwz.cn/hzmenu">http://dwz.cn/hzmenu</a></h4>
-            <h4>本页短链2: <a href="http://t.im/menu">http://t.im/menu</a></h4>
-
+            <h4>手动添加日期:菜单</h4>
+            <form action="/menu/add/151203/17063" method="post">
+                <input type="text" name="day" />
+                <input type="text" name="mid" />
+                <input type="submit" value="add" />
+            </form>
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
-            <h4><b>微信公众号</b>: <a href="http://i4.tietuku.com/31ba2c25ff98efdf.jpg">neteasemenu</a></h4>
-            <h4>供餐时间: <a href="http://i4.tietuku.com/6b439c74e67d5336.jpg">图片</a></h4>
-            <h4>源码: <a href="https://github.com/arcsun/neteaseMenu">github</a></h4>
-            <h4>报错: <a href="mailto:hzsunzhengyu@corp.netease.com">hzsunzhengyu@corp.netease.com</a></h4>
 
+            <h4>删除指定日期</h4>
+            <form action="/menu/delete/150101" method="post">
+                <input type="text" name="day" />
+                <input type="submit" value="del" />
+            </form>
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
-            <h4><b>更新</b></h4>
-            <p>2016.1.4: 解决一个跨年导致的时间错误</p>
+
+            <h4>查询菜单数据: <a href="http://43.241.220.139:5000/menu/info">/menu/info</a></h4>
+            <h4>清空maybe列表: <a href="http://43.241.220.139:5000/menu/clear">/menu/clear</a></h4>
+
 		</div>
-
-
-
 		<div class="col-md-1 column">
 		</div>
 	</div>
