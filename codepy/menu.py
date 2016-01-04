@@ -11,14 +11,16 @@ class Menu:
     def __init__(self, day= 0):
         self.today = int(time.strftime('%y%m%d',time.localtime(time.time())))  # 151022
         self.returnMaybe = False
-        if 0 <= day <= 1000:
+        self.gotoid = False
+        if 0 <= day <= 99:
             self.today = self.getNextDay(self.today, day)
-        elif day > 151026:
-            self.today = day
-        elif day > 1000:
+        elif 100<= day <= 9999:
             self.returnMaybe = True
-
-
+        elif 10000<= day < 99999:
+            self.gotoid = True
+            self.today = day
+        elif 151027<= day < 991231:
+            self.today = day
 
         self.startId = 0
         self.result = u'未找到菜单'
@@ -80,6 +82,8 @@ class Menu:
             else:
                 menulog.debug(self.result)
 
+        if self.gotoid:
+            return urlhead + str(self.today)
         try:
             db = dbm.open('datafile', 'r')
             self.startId = eval(db['startId'])

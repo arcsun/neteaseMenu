@@ -8,11 +8,12 @@ from codepy import menulog
 pattern_title = r"<title>(.+)</title>"
 pattern_weekday = ur"（星期(.)）"
 pattern_year = ur'20(\d\d)-'
+pattern_month_update = r'-(\d+)-'
 pattern_month = r'>(\d+)</span>'
 pattern_day = ur'月(\d+)日'
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 datafile = 'datafile'
-startId = 15500
+startId = 18800
 
 class Background:
     def __init__(self):
@@ -83,6 +84,11 @@ class Background:
                             day = monthday[1]
                         else:
                             day = re.findall(pattern_day, text)[0]
+
+                        update_month = re.findall(pattern_month_update, text)[0]  # 发布菜单的月份，用于跨年
+                        if int(update_month) == 12 and int(month) == 1:
+                            year = str(int(year)+1)
+
                         thisday = int(year+month+day)
                         self.startId = self.nowId
                         if self.cache.has_key(thisday):
