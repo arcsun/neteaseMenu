@@ -41,8 +41,9 @@ def menuList():
         return msg
 
 
-@app.route('/menu/manage/hzsunzhengyu')
+@app.route('/menu/manage/hzmenu')
 def manage():
+    # 暂无权限
     return render_template('manage.html')
 
 
