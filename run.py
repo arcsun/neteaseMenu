@@ -144,8 +144,11 @@ def readLog():
             if fname.startswith('menu.log'):
                 logs.append(fname)
         f = open(logs[-1])
-        content = f.read().decode('utf-8')
-        return content
+        contents = f.readlines()
+        content = ''
+        for msg in reversed(contents):
+            content += msg+ '<br>'
+        return content.decode('utf-8')
     except IOError:
         return '读取日志出错'
     finally:
