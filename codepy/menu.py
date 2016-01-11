@@ -5,7 +5,7 @@ import anydbm as dbm
 import menulog
 
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
-frequency = 7200
+frequency = 5400
 
 class Menu:
     def __init__(self, day= 0):

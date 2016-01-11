@@ -3,6 +3,7 @@ from flask import Flask, redirect, render_template, request
 from codepy import menulog
 import anydbm as dbm
 import webbrowser
+import os
 
 app = Flask(__name__)
 
@@ -131,6 +132,26 @@ def add(day= 151203, mid= 17063):
         msg = u'缓存/POST参数读取错误'
         menulog.info(msg)
         return msg
+
+
+@app.route('/menu/log')
+def readLog():
+    f = None
+    try:
+        files = os.listdir('./')
+        logs = []
+        for fname in files:
+            if fname.startswith('menu.log'):
+                logs.append(fname)
+        f = open(logs[-1])
+        content = f.read().decode('utf-8')
+        return content
+    except IOError:
+        return '读取日志出错'
+    finally:
+        if f:
+            f.close()
+
 
 
 if __name__ == '__main__':
