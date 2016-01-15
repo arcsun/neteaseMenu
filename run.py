@@ -136,7 +136,7 @@ def add(day= 151203, mid= 17063):
 
 @app.route('/menu/log/<int:lines>')
 def readLog(lines= 0):
-    # 读取多少行, 0为全部
+    # 读取多少行log, 0为全部
     f = None
     try:
         files = os.listdir('./')

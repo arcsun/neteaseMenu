@@ -70,7 +70,7 @@ class Background:
             self.cache = eval(db['cache'])
             self.maybe = eval(db['maybe'])
             self.nowId = self.startId
-            self.lastQuery = self.getTime()         # 保存最后搜索时间
+            self.lastQuery = self.getTime()        # 保存最后搜索时间
 
             while self.nowId - self.startId < self.interval:
                 menulog.info(u'开始查找: %d'% self.nowId)
