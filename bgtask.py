@@ -11,6 +11,7 @@ pattern_year = ur'20(\d\d)-'
 pattern_month_update = r'-(\d+)-'
 pattern_month = r'>(\d+)</span>'
 pattern_day = ur'月(\d+)日'
+pattern_day2 = ur'>(\d+)日'
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 datafile = 'datafile'
 startId = 18800
@@ -82,6 +83,9 @@ class Background:
                         month = monthday[0]
                         if len(monthday) > 1:
                             day = monthday[1]
+                            if len(day) == 1:
+                                # 针对 1</span>...>5日&nbsp
+                                day += re.findall(pattern_day2, text)[0]
                         else:
                             day = re.findall(pattern_day, text)[0]
 

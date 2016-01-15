@@ -134,8 +134,9 @@ def add(day= 151203, mid= 17063):
         return msg
 
 
-@app.route('/menu/log')
-def readLog():
+@app.route('/menu/log/<int:lines>')
+def readLog(lines= 0):
+    # 读取多少行, 0为全部
     f = None
     try:
         files = os.listdir('./')
@@ -143,12 +144,22 @@ def readLog():
         for fname in files:
             if fname.startswith('menu.log'):
                 logs.append(fname)
-        f = open(logs[-1])
-        contents = f.readlines()
-        content = ''
-        for msg in reversed(contents):
-            content += msg+ '<br>'
-        return content.decode('utf-8')
+        if logs:
+            f = open(logs[-1])
+            contents = f.readlines()
+            content = ''
+            if lines == 0:
+                lines = len(contents)
+            line = 0
+            for msg in reversed(contents):
+                line += 1
+                if line < lines:
+                    content += msg+ '<br>'
+                else:
+                    break
+            return content.decode('utf-8')
+        else:
+            return u'暂无日志'
     except IOError:
         return '读取日志出错'
     finally:
