@@ -18,8 +18,8 @@ startId = 18800
 
 class Background:
     def __init__(self):
-        self.frequency = 5400         # 间隔(秒)
-        self.interval = 120           # 每次爬的id数量
+        self.frequency = 10800        # 间隔(秒)
+        self.interval = 150           # 每次爬的id数量
         self.back = 30                # 每次从self.startId - self.back开始查找，防止被占坑
         self.firstRun = True          # 是否在程序开始后先执行一次
 
