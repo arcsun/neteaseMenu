@@ -30,8 +30,6 @@ class Menu:
         self.maybe = []         # 爬到的报错的页面
         self.maybeUrl = ''
         self.tmp = 0
-        self.visit = 0
-
 
     def getNextDay(self, today, step= 1):
         def calcu():
@@ -83,7 +81,6 @@ class Menu:
             else:
                 menulog.debug(self.result)
 
-        self.visit += 1
         if self.gotoid:
             return urlhead + str(self.today)
         try:
@@ -100,7 +97,7 @@ class Menu:
 
         if self.today in self.cache.keys():
             # 缓存里有就直接返回url
-            menulog.info('find cache @%s @%s'% (self.visit, getTime()))
+            menulog.info('find cache @%s'% getTime())
             return getUrl()
         else:
             # 缓存中查不到
