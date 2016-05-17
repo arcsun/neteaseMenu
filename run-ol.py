@@ -3,6 +3,7 @@ from flask import Flask, redirect, render_template, request
 from codepy import menulog
 import anydbm as dbm
 import os
+from datetime import datetime
 
 # 线上版本的启动入口
 app = Flask(__name__)
@@ -24,6 +25,27 @@ def menu(day=0):
     else:
         return url
 
+def getWeekDayFromDay(daytime):
+    """根据日期(如20160517)计算是星期几"""
+    try:
+        daytime = '20'+ str(daytime)    # '20160517'
+        year = int(daytime[:4])         # 2016
+        month = int(daytime[4:6])       # 5
+        day = int(daytime[6:8])         # 17
+        weekday = datetime(year, month, day, 0, 0, 0, 0).weekday()
+        weekdaynames= {
+            0: u'星期一',
+            1: u'星期二',
+            2: u'星期三',
+            3: u'星期四',
+            4: u'星期五',
+            5: u'星期六',
+            6: u'星期日',
+        }
+        return weekdaynames.get(weekday, u'')
+    except:
+        menulog.debug(u'获取星期几错误')
+        return u''
 
 @app.route('/menu')
 def menuList():
@@ -35,7 +57,10 @@ def menuList():
         for day in future:
             vals[day] = cache[day]
         db.close()
-        return render_template('menu.html', vals= vals, days= future)
+        weekdays = {}
+        for day in vals.keys():
+            weekdays[day] = getWeekDayFromDay(day)
+        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays)
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)

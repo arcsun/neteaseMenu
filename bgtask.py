@@ -48,7 +48,7 @@ class Background:
                 if self.getTime() % self.frequency == 0 and not self.running:
                     self.running = True
                     self.process()
-                elif self.getTime() % 300 == 0:   # 每300s记录一次存活信息
+                elif self.getTime() % 3600 == 0:   # 每3600s记录一次存活信息
                     menulog.info('%s@%d'% (time.strftime('20%y-%m-%d %H:%M:%S', time.localtime()), self.getTime()))
                     time.sleep(1)
 

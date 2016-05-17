@@ -15,10 +15,10 @@
 		</div>
 
 		<div class="col-md-10 column">
-            <h3><b>菜单列表</b></h3>
+            <h3><b>一周菜单</b></h3>
             {% if days and vals %}
                 {% for day in days %}
-                <h4>&nbsp;<a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[day] }}">{{ day }} </a></h4>
+                <h4>&nbsp;<a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[day] }}">{{ day }}&nbsp;&nbsp;{{weekdays.get(day)}}</a></h4>
                 {% endfor %}
             {% else %}
             <h4>暂无</h4>
@@ -34,7 +34,7 @@
 
             <h4>参数说明</h4>
             <p>0-99: 多少天之后的菜单(如0今天、1明天)</p>
-            <p>100-9999: 跳转到可能的菜单页(各值效果相同)</p>
+            <p>100-9999: 跳转到可能的菜单页</p>
             <p>10000-99999: 跳转到对应id的易信页</p>
             <p>>=151027: 查询指定日期的菜单</p>
 
@@ -53,6 +53,7 @@
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
             <h4><b>更新</b></h4>
+            <p>2016.5.17: 一周菜单增加显示星期几</p>
             <p>2016.3.16: 修复供餐时间的图片,地址更换为七牛云</p>
             <p>2016.1.15: 适配一个新的样式</p>
             <p>2016.1.4: 解决一个跨年导致的时间错误</p>
