@@ -7,6 +7,8 @@ from datetime import datetime
 
 # 线上版本的启动入口
 app = Flask(__name__)
+visit = 0
+visitHome = 0
 
 @app.route('/')
 def hello_world():
@@ -19,6 +21,8 @@ def menu(day=0):
     from codepy import menu
     if request.method == 'POST':
         day = int(request.form['day'])
+    globals()['visit'] += 1
+    menulog.info(u'访问菜单@%s'% visit)
     url = menu.Menu(day).process()
     if url.startswith('http'):
         return redirect(url)
@@ -49,6 +53,8 @@ def getWeekDayFromDay(daytime):
 
 @app.route('/menu')
 def menuList():
+    globals()['visitHome'] += 1
+    menulog.info(u'访问主页@%s'% visitHome)
     try:
         db = dbm.open('datafile', 'c')
         cache = eval(db['cache'])
