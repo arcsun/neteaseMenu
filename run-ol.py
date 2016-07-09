@@ -119,8 +119,8 @@ def delfuture(day= 161300):
         if request.method == 'POST':
             day = int(request.form['day'])
         future = eval(db['future'])
-        if future.has_key(day):
-            del future[day]
+        if day in future:
+            future.remove(day)
             msg = u'删除%s'% day
         else:
             msg = u'del key not found'
@@ -129,7 +129,8 @@ def delfuture(day= 161300):
         db.close()
         delete(day)
         return msg
-    except (IOError, KeyError):
+    except (IOError, KeyError) as e:
+        print e
         return u'缓存读取错误'
 
 
@@ -144,9 +145,12 @@ def refreshlist():
             if day >= today:
                 future.append(day)
         future.sort()
+        print future
         db['future'] = str(future)
-        menulog.info(u'更新%s后已找到的菜单列表 from homepage'% today)
+        msg = u'更新%s后已找到的菜单列表 from homepage'% today
+        menulog.info(msg)
         db.close()
+        return msg
     except (IOError, KeyError):
         return u'缓存读取错误'
 
