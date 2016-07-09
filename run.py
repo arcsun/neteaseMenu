@@ -5,6 +5,7 @@ import anydbm as dbm
 import webbrowser
 import os
 from datetime import datetime
+import time
 
 app = Flask(__name__)
 visit = 0
@@ -106,6 +107,45 @@ def delete(day= 150101):
         db['cache'] = str(cache)
         db.close()
         return msg
+    except (IOError, KeyError):
+        return u'缓存读取错误'
+
+
+@app.route('/menu/delfuture/<int:day>', methods = ['GET', 'POST'])
+def delfuture(day= 161300):
+    try:
+        db = dbm.open('datafile', 'w')
+        if request.method == 'POST':
+            day = int(request.form['day'])
+        future = eval(db['future'])
+        if future.has_key(day):
+            del future[day]
+            msg = u'删除%s'% day
+        else:
+            msg = u'del key not found'
+        menulog.info(msg)
+        db['future'] = str(future)
+        db.close()
+        delete(day)
+        return msg
+    except (IOError, KeyError):
+        return u'缓存读取错误'
+
+
+@app.route('/menu/refreshlist')
+def refreshlist():
+    try:
+        db = dbm.open('datafile', 'w')
+        cache = eval(db['cache'])
+        future = []
+        today = int(time.strftime('%y%m%d',time.localtime(time.time())))
+        for day in cache.keys():
+            if day >= today:
+                future.append(day)
+        future.sort()
+        db['future'] = str(future)
+        menulog.info(u'更新%s后已找到的菜单列表 from homepage'% today)
+        db.close()
     except (IOError, KeyError):
         return u'缓存读取错误'
 
