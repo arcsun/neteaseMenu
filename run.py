@@ -11,6 +11,7 @@ app = Flask(__name__)
 visit = 0
 visitHome = 0
 
+
 @app.route('/')
 def hello_world():
     return 'Netease Menu!'
