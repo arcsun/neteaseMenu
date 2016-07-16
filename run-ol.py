@@ -43,9 +43,13 @@ def menus(day=0):
     menulog.info(u'访问菜单@%s'% visit)
     url = menu.Menu(day).process()
     if url.startswith('http'):
-        page = urllib.urlopen(url)
-        text = page.read().decode('utf-8')
-        return text
+        try:
+            page = urllib.urlopen(url)
+            text = page.read().decode('utf-8')
+            return text
+        except Exception as e:
+            menulog.debug(str(e))
+            return redirect(url)
     else:
         return url
 

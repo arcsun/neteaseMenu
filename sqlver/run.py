@@ -19,13 +19,20 @@ def hello_world():
 
 @app.route('/menus/<int:day>', methods = ['GET', 'POST'])
 def menus(day=0):
-    # 为解决微信内跳转卡住的问题, 增加这个方法
-    # 服务器从易信读取网页信息后再返回给用户
     from codepy import menu
     if request.method == 'POST':
         day = int(request.form['day'])
     url = menu.Menu(day).process()
     if url.startswith('http'):
+        yxid = url.split('=')[1]
+        print yxid
+
+        conn = sqlite3.connect('menu.db')
+        curs = conn.cursor()
+        curs.execute('create table if not exists menu(day int, yxid int, page text) ')
+
+
+
         page = urllib.urlopen(url)
         text = page.read().decode('utf-8')
         return text
