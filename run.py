@@ -6,6 +6,7 @@ import webbrowser
 import os
 from datetime import datetime
 import time
+import urllib
 
 app = Flask(__name__)
 visit = 0
@@ -28,6 +29,24 @@ def menu(day=0):
     url = menu.Menu(day).process()
     if url.startswith('http'):
         return redirect(url)
+    else:
+        return url
+
+
+@app.route('/menus/<int:day>', methods = ['GET', 'POST'])
+def menus(day=0):
+    # 为解决微信内跳转卡住的问题, 增加这个方法
+    # 服务器从易信读取网页信息后再返回给用户
+    from codepy import menu
+    if request.method == 'POST':
+        day = int(request.form['day'])
+    globals()['visit'] += 1
+    menulog.info(u'访问菜单@%s'% visit)
+    url = menu.Menu(day).process()
+    if url.startswith('http'):
+        page = urllib.urlopen(url)
+        text = page.read().decode('utf-8')
+        return text
     else:
         return url
 

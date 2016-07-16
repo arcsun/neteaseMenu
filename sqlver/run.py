@@ -7,6 +7,7 @@ import urllib
 
 app = Flask(__name__)
 
+# 后期可能会从dbm更换为sqlite
 
 @app.route('/')
 def hello_world():
