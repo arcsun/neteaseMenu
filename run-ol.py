@@ -6,6 +6,7 @@ import os
 import urllib
 from datetime import datetime
 import time
+import threading
 
 # 线上版本的启动入口
 app = Flask(__name__)
@@ -32,6 +33,7 @@ def menu(day=0):
     else:
         return url
 
+
 @app.route('/menus/<int:day>', methods = ['GET', 'POST'])
 def menus(day=0):
     # 为解决微信内跳转卡住的问题, 增加这个方法
@@ -43,13 +45,9 @@ def menus(day=0):
     menulog.info(u'访问菜单@%s'% visit)
     url = menu.Menu(day).process()
     if url.startswith('http'):
-        try:
-            page = urllib.urlopen(url)
-            text = page.read().decode('utf-8')
-            return text
-        except Exception as e:
-            menulog.debug(str(e))
-            return redirect(url)
+        page = urllib.urlopen(url)
+        text = page.read().decode('utf-8')
+        return text
     else:
         return url
 
@@ -90,7 +88,7 @@ def menuList():
         weekdays = {}
         for day in vals.keys():
             weekdays[day] = getWeekDayFromDay(day)
-        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays)
+        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays, visit= visit, visitHome= visitHome)
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
@@ -265,9 +263,43 @@ def readLog(lines= 0):
             f.close()
 
 
+def writeVisit():
+    # 每300s持久化一次访问计数
+    interval = 300
+    while True:
+        if time.time()% interval== 0:
+            try:
+                db = dbm.open('visitfile', 'w')
+                db['visit'] = str(visit)
+                db['visitHome'] =  str(visitHome)
+                db.close()
+                menulog.debug('write visit %s %s'% (visit, visitHome))
+            except:
+                menulog.debug('log visit error')
+            finally:
+                time.sleep(0.1)
+
+def readVisit():
+    # 每次启动时读取访问计数
+    try:
+        db = dbm.open('visitfile', 'c')
+        if not len(db):
+            # 15年10月到16年8月初, 点击大约是这些(从主页点到菜单页不计点击)
+            db['visit'] = '65000'
+            db['visitHome'] = '20000'
+        globals()['visit'] = int(db['visit'])
+        globals()['visitHome'] = int(db['visitHome'])
+    except:
+        menulog.debug('init visit error')
+
+
 if __name__ == '__main__':
     # 这两行用于gunicorn
     from werkzeug.contrib.fixers import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
+    readVisit()
+    t = threading.Thread(target= writeVisit, args= ())
+    t.setDaemon(True)
+    t.start()
     app.run(host='0.0.0.0', port= 5000)
