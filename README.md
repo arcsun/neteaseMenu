@@ -18,17 +18,18 @@ http://43.241.220.139:5000/menu/0
   Werkzeug==0.10.4  
   
 bgtask.py:  
-  爬虫, 每小时抓取一次，需(首先)单独执行: (python bgtask.py &)
+  爬虫, 每小时抓取一次，需首先执行: (python bgtask.py &)  
   抓取到的url等信息存储在文件datafile中  
   
 run.py:  
-  web程序入口, python run.py 或使用gunicorn等启动
-  gunicorn -b 0.0.0.0:5000 -k gevent run-ol:app
+  web程序入口, python run.py 或使用gunicorn等启动  
+  gunicorn -b 0.0.0.0:5000 -k gevent run-ol:app  
   日志记录在menu.log  
   
 codepy:  
   web和日志部分的代码  
   读取bgtask.py生成的文件  
+  
     
   
  
