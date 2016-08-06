@@ -77,7 +77,8 @@ def getWeekDayFromDay(daytime):
 @app.route('/menu')
 def menuList():
     # 每次重启后应进入主页来启动访问计数
-    checkStart()
+    # 线上跑的时候有bug, 暂时去掉
+    # checkStart()
 
     globals()['visitHome'] += 1
     menulog.info(u'访问主页@%s'% visitHome)
@@ -298,7 +299,6 @@ def readVisit():
 
 
 def checkStart():
-    # 使用gunicorn时, 这几行放在下面不执行
     if globals()['start']:
         return
     else:
