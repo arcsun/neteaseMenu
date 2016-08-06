@@ -12,6 +12,7 @@ import threading
 app = Flask(__name__)
 visit = 0
 visitHome = 0
+start = False
 
 
 @app.route('/')
@@ -75,6 +76,9 @@ def getWeekDayFromDay(daytime):
 
 @app.route('/menu')
 def menuList():
+    # 每次重启后应进入主页来启动访问计数
+    checkStart()
+
     globals()['visitHome'] += 1
     menulog.info(u'访问主页@%s'% visitHome)
     try:
@@ -97,7 +101,6 @@ def menuList():
 
 @app.route('/menu/manage/hzmenu')
 def manage():
-    # 暂无权限
     return render_template('manage.html')
 
 
@@ -289,8 +292,21 @@ def readVisit():
             db['visitHome'] = '20000'
         globals()['visit'] = int(db['visit'])
         globals()['visitHome'] = int(db['visitHome'])
+        menulog.debug('init visit %s %s'% (visit, visitHome))
     except:
         menulog.debug('init visit error')
+
+
+def checkStart():
+    # 使用gunicorn时, 这几行放在下面不执行
+    if globals()['start']:
+        return
+    else:
+        readVisit()
+        t = threading.Thread(target= writeVisit, args= ())
+        t.setDaemon(True)
+        t.start()
+        globals()['start'] = True
 
 
 if __name__ == '__main__':
@@ -298,8 +314,4 @@ if __name__ == '__main__':
     from werkzeug.contrib.fixers import ProxyFix
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
-    readVisit()
-    t = threading.Thread(target= writeVisit, args= ())
-    t.setDaemon(True)
-    t.start()
     app.run(host='0.0.0.0', port= 5000)
