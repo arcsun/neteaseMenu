@@ -14,7 +14,7 @@ pattern_day = ur'月(\d+)日'
 pattern_day2 = ur'>(\d+)日'
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 datafile = 'datafile'
-startId = 18800
+startId = 37000
 
 class Background:
     def __init__(self):
@@ -33,6 +33,7 @@ class Background:
         self.lastQuery = 0
         self.cache = {}               # {151019:15163}  # 日期:id
         self.maybe = []               # 爬到的报错的页面
+        self.empty = 0
 
     def getTime(self):
         return int(time.time())
@@ -77,14 +78,23 @@ class Background:
                 page = urllib.urlopen(urlhead+ str(self.nowId))
                 text = page.read().decode('utf-8')
                 if text.find(u'今日菜单') != -1:
+                    self.empty = 0
                     try:
                         year = re.findall(pattern_year, text)[0]
                         monthday = re.findall(pattern_month, text)
-                        month = monthday[0]
-                        if len(monthday) > 1:
-                            day = monthday[1]
+
+                        if monthday[0] == '0' and len(monthday)> 2:
+                            month = monthday[0]+monthday[1]
+                            dayIndex = 2
+                        else:
+                            month = monthday[0]
+                            dayIndex = 1
+
+                        if len(monthday) > dayIndex:
+                            day = monthday[dayIndex]
                             if len(day) == 1:
                                 # 针对 1</span>...>5日&nbsp
+                                # 上面的月份也有这种情况
                                 day += re.findall(pattern_day2, text)[0]
                         else:
                             day = re.findall(pattern_day, text)[0]
@@ -92,33 +102,37 @@ class Background:
                         update_month = re.findall(pattern_month_update, text)[0]  # 发布菜单的月份，用于跨年
                         if int(update_month) == 12 and int(month) == 1:
                             year = str(int(year)+1)
-
                         thisday = int(year+month+day)
+
                         self.startId = self.nowId
                         if self.cache.has_key(thisday):
                             menulog.info(u'更新%s的菜单id为%s'% (thisday, self.nowId))
                         self.cache[thisday] = self.nowId
                         menulog.info('find %d'% self.nowId)
                     except (IndexError, ):
-                        if text.find(u'风味小吃') != -1:
-                            # 抓到了广州的菜单
-                            pass
-                        else:
-                            if self.nowId not in self.maybe:
-                                self.maybe.append(self.nowId)
-                            menulog.debug('IndexError')
+                        if text.find(u'祝您用餐愉快') and text.find(u'农历'):
+                            menulog.debug('gz menu')
+                        elif self.nowId not in self.maybe:
+                            self.maybe.append(self.nowId)
+                            menulog.debug('IndexError add maybe')
+
                 else:
                     if text.find(u'请求素材不存在') == -1:
                         # 搜索到的结果页有内容(不是菜单)
                         self.usedId = self.nowId
+                        self.empty = 0
+                    else:
+                        self.empty += 1
+                        if self.empty > 10:
+                            menulog.debug('break this round')
+                            break
                 self.nowId += 1
 
-            if self.maybe and max(self.maybe) > max(self.cache.values()):
-                # 例如先更新了15956但是样式错误, 然后用过的id更新至16xxx, 最后又把15958替换成了正确的菜单
-                # 目前还出现了替换已使用的某id为菜单的情况
-                menulog.info(u'更新起点至可能的ID:%d'% max(self.maybe))
-                self.startId = max(self.maybe)
-            elif self.usedId > self.startId:
+            # if self.maybe and max(self.maybe) > max(self.cache.values()):
+            #   # 取消这个设计, 格式变化太大, 很可能导致卡住
+                # menulog.info(u'更新起点至可能的ID:%d'% max(self.maybe))
+                # self.startId = max(self.maybe)
+            if self.usedId > self.startId:
                 menulog.info(u'更新起点至%d'% self.usedId)
                 self.startId = self.usedId
 

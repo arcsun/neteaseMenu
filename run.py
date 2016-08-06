@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 import time
 import urllib
+import threading
 
 app = Flask(__name__)
 visit = 0
@@ -87,7 +88,7 @@ def menuList():
         weekdays = {}
         for day in vals.keys():
             weekdays[day] = getWeekDayFromDay(day)
-        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays)
+        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays, visit= visit, visitHome= visitHome)
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
@@ -262,6 +263,40 @@ def readLog(lines= 0):
             f.close()
 
 
+def writeVisit():
+    # 每300s持久化一次访问计数
+    interval = 300
+    while True:
+        if time.time()% interval== 0:
+            try:
+                db = dbm.open('visitfile', 'w')
+                db['visit'] = str(visit)
+                db['visitHome'] =  str(visitHome)
+                db.close()
+                menulog.debug('write visit %s %s'% (visit, visitHome))
+            except:
+                menulog.debug('log visit error')
+            finally:
+                time.sleep(0.1)
+
+def readVisit():
+    # 每次启动时读取访问计数
+    try:
+        db = dbm.open('visitfile', 'c')
+        if not len(db):
+            # 15年10月到16年8月初, 点击大约是这些(从主页点到菜单页不计点击)
+            db['visit'] = '65000'
+            db['visitHome'] = '20000'
+        globals()['visit'] = int(db['visit'])
+        globals()['visitHome'] = int(db['visitHome'])
+    except:
+        menulog.debug('init visit error')
+
+
 if __name__ == '__main__':
+    readVisit()
+    t = threading.Thread(target= writeVisit, args= ())
+    t.setDaemon(True)
+    t.start()
     webbrowser.open('http://127.0.0.1:8080/menu')
     app.run(port= 8080)
