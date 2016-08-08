@@ -31,7 +31,6 @@ class Menu:
         self.maybeUrl = ''
         self.tmp = 0
 
-
     def getNextDay(self, today, step= 1):
         def calcu():
             lastDays = {'0131': '0201', '0229': '0301', '0331': '0401', '0430': '0501', '0531': '0601', '0630': '0701',

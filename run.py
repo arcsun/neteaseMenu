@@ -4,8 +4,15 @@ from codepy import menulog
 import anydbm as dbm
 import webbrowser
 import os
+from datetime import datetime
+import time
+import urllib
+import threading
 
 app = Flask(__name__)
+visit = 0
+visitHome = 0
+
 
 @app.route('/')
 def hello_world():
@@ -18,6 +25,8 @@ def menu(day=0):
     from codepy import menu
     if request.method == 'POST':
         day = int(request.form['day'])
+    globals()['visit'] += 1
+    menulog.info(u'访问菜单@%s'% visit)
     url = menu.Menu(day).process()
     if url.startswith('http'):
         return redirect(url)
@@ -25,8 +34,49 @@ def menu(day=0):
         return url
 
 
+@app.route('/menus/<int:day>', methods = ['GET', 'POST'])
+def menus(day=0):
+    # 为解决微信内跳转卡住的问题, 增加这个方法
+    # 服务器从易信读取网页信息后再返回给用户
+    from codepy import menu
+    if request.method == 'POST':
+        day = int(request.form['day'])
+    globals()['visit'] += 1
+    menulog.info(u'访问菜单@%s'% visit)
+    url = menu.Menu(day).process()
+    if url.startswith('http'):
+        page = urllib.urlopen(url)
+        text = page.read().decode('utf-8')
+        return text
+    else:
+        return url
+
+def getWeekDayFromDay(daytime):
+    """根据日期(如20160517)计算是星期几"""
+    try:
+        daytime = '20'+ str(daytime)    # '20160517'
+        year = int(daytime[:4])         # 2016
+        month = int(daytime[4:6])       # 5
+        day = int(daytime[6:8])         # 17
+        weekday = datetime(year, month, day, 0, 0, 0, 0).weekday()
+        weekdaynames= {
+            0: u'星期一',
+            1: u'星期二',
+            2: u'星期三',
+            3: u'星期四',
+            4: u'星期五',
+            5: u'星期六',
+            6: u'星期日',
+        }
+        return weekdaynames.get(weekday, u'')
+    except:
+        menulog.debug(u'获取星期几错误')
+        return u''
+
 @app.route('/menu')
 def menuList():
+    globals()['visitHome'] += 1
+    menulog.info(u'访问主页@%s'% visitHome)
     try:
         db = dbm.open('datafile', 'c')
         cache = eval(db['cache'])
@@ -35,7 +85,10 @@ def menuList():
         for day in future:
             vals[day] = cache[day]
         db.close()
-        return render_template('menu.html', vals= vals, days= future)
+        weekdays = {}
+        for day in vals.keys():
+            weekdays[day] = getWeekDayFromDay(day)
+        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays, visit= visit, visitHome= visitHome)
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
@@ -73,6 +126,49 @@ def delete(day= 150101):
             msg = u'del key not found'
         menulog.info(msg)
         db['cache'] = str(cache)
+        db.close()
+        return msg
+    except (IOError, KeyError):
+        return u'缓存读取错误'
+
+
+@app.route('/menu/delfuture/<int:day>', methods = ['GET', 'POST'])
+def delfuture(day= 161300):
+    try:
+        db = dbm.open('datafile', 'w')
+        if request.method == 'POST':
+            day = int(request.form['day'])
+        future = eval(db['future'])
+        if day in future:
+            future.remove(day)
+            msg = u'删除%s'% day
+        else:
+            msg = u'del key not found'
+        menulog.info(msg)
+        db['future'] = str(future)
+        db.close()
+        delete(day)
+        return msg
+    except (IOError, KeyError) as e:
+        print e
+        return u'缓存读取错误'
+
+
+@app.route('/menu/refreshlist')
+def refreshlist():
+    try:
+        db = dbm.open('datafile', 'w')
+        cache = eval(db['cache'])
+        future = []
+        today = int(time.strftime('%y%m%d',time.localtime(time.time())))
+        for day in cache.keys():
+            if day >= today:
+                future.append(day)
+        future.sort()
+        print future
+        db['future'] = str(future)
+        msg = u'更新%s后已找到的菜单列表 from homepage'% today
+        menulog.info(msg)
         db.close()
         return msg
     except (IOError, KeyError):
@@ -167,6 +263,40 @@ def readLog(lines= 0):
             f.close()
 
 
+def writeVisit():
+    # 每300s持久化一次访问计数
+    interval = 300
+    while True:
+        if time.time()% interval== 0:
+            try:
+                db = dbm.open('visitfile', 'w')
+                db['visit'] = str(visit)
+                db['visitHome'] =  str(visitHome)
+                db.close()
+                menulog.debug('write visit %s %s'% (visit, visitHome))
+            except:
+                menulog.debug('log visit error')
+            finally:
+                time.sleep(0.1)
+
+def readVisit():
+    # 每次启动时读取访问计数
+    try:
+        db = dbm.open('visitfile', 'c')
+        if not len(db):
+            # 15年10月到16年8月初, 点击大约是这些(从主页点到菜单页不计点击)
+            db['visit'] = '65000'
+            db['visitHome'] = '20000'
+        globals()['visit'] = int(db['visit'])
+        globals()['visitHome'] = int(db['visitHome'])
+    except:
+        menulog.debug('init visit error')
+
+
 if __name__ == '__main__':
+    readVisit()
+    t = threading.Thread(target= writeVisit, args= ())
+    t.setDaemon(True)
+    t.start()
     webbrowser.open('http://127.0.0.1:8080/menu')
     app.run(port= 8080)
