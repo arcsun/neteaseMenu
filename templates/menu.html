@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>杭州菜单</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- 这个logo很快就要换成杭研的了 -->
     <link rel="SHORTCUT ICON" href="/static/panguMiniLogo.png">
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
@@ -24,42 +25,31 @@
             <h4>暂无</h4>
             {% endif %}
 
-{#            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />#}
-{#            <h3><b>访问量</b></h3>#}
-{#            <h4>菜单:&nbsp;{{ visit }}</h4>#}
-{#            <h4>主页:&nbsp;{{ visitHome }}</h4>#}
+            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+
+            <h4><b>今日菜单</b>: <a href="http://59.111.96.36/menu/0">59.111.96.36/menu/0</a></h4>
+            <h4><b>微信公众号</b>: <a href="http://i4.tietuku.com/31ba2c25ff98efdf.jpg">neteasemenu</a></h4>
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
 
-            <h3><b>自定义查询</b></h3>
             <form action="/menu/0" method="post">
               <input type="text" name="day" />
-              <input type="submit" value="查询" />
+              <input type="submit" value="自定义查询" />
             </form>
 
-            <h4>参数说明</h4>
+            <h5>参数说明:</h5>
             <p>0-99: 多少天之后的菜单(如0今天、1明天)</p>
             <p>100-9999: 跳转到可能的菜单页(一般没用)</p>
             <p>10000-99999: 跳转到对应id的易信页</p>
             <p>>=151027: 查询指定日期的菜单</p>
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
-
-            <h4><b>今日菜单</b>: <a href="http://43.241.220.139:5000/menu/0">http://43.241.220.139:5000/menu/0</a></h4>
-            <h4>今日菜单短链: <a href="http://t.im/today">http://t.im/today</a></h4>
-            <h4>本页短链1: <a href="http://dwz.cn/hzmenu">http://dwz.cn/hzmenu</a></h4>
-            <h4>本页短链2: <a href="http://t.im/menu">http://t.im/menu</a></h4>
-
-            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
-            <h4><b>微信公众号</b>: <a href="http://i4.tietuku.com/31ba2c25ff98efdf.jpg">neteasemenu</a></h4>
-            <h4>供餐时间: <a href="http://7xj5y6.com1.z0.glb.clouddn.com/16-3-16/84962471.jpg">图片</a></h4>
             <h4>源码: <a href="https://github.com/arcsun/neteaseMenu">github</a></h4>
             <h4>报错: <a href="mailto:hzsunzhengyu@corp.netease.com">hzsunzhengyu@corp.netease.com</a></h4>
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
             <h4><b>更新</b></h4>
-            <p>2016.8.6: 一大波优化和改进</p>
-            <p>2016.7.16: 尝试解决微信里跳转缓慢的问题</p>
+            <p>2016.10.23: 更换服务器到网易蜂巢和一些改进</p>
 		</div>
 
 

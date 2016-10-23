@@ -5,6 +5,11 @@ import re
 import anydbm as dbm
 from codepy import menulog
 
+'''
+(python bgtask.py &)
+用于抓取菜单信息
+'''
+
 pattern_title = r"<title>(.+)</title>"
 pattern_weekday = ur"（星期(.)）"
 pattern_year = ur'20(\d\d)-'

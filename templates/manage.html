@@ -54,6 +54,11 @@
             <h4>清空maybe列表: <a href="/menu/clear">/menu/clear</a></h4>
             <h4>查看log: <a href="/menu/log/1000">/menu/log</a></h4>
 
+            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+            <h4>{{ timestr|safe }}</h4>
+            <h4>菜单访问量:&nbsp;{{ visit }}</h4>
+            <h4>主页访问量:&nbsp;{{ visitHome }}</h4>
+
 		</div>
 		<div class="col-md-1 column">
 		</div>
