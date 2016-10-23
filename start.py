@@ -50,6 +50,21 @@ def menus(day=0):
     else:
         return url
 
+
+@app.route('/menus/bus')
+def bus():
+    # 班车路线页, 中转一下
+    globals()['visit'] += 1
+    menulog.info(u'访问菜单@%s'% visit)
+    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=7386"
+    try:
+        page = urllib.urlopen(url)
+        text = page.read().decode('utf-8')
+        return text
+    except:
+        return u'网页访问出错'
+
+
 def getWeekDayFromDay(daytime):
     """根据日期(如20160517)计算是星期几"""
     try:
@@ -272,16 +287,17 @@ def readLog(lines= 0):
 
 
 if __name__ == '__main__':
+    # 80端口在微信中会被提示使用域名访问,多一次跳转
     if sys.platform.startswith('win'):
         # 本地调试
         # import webbrowser
-        # webbrowser.open('http://127.0.0.1/menu')
-        app.run(host='127.0.0.1', port= 80, debug= True)
+        # webbrowser.open('http://127.0.0.1:88/menu')
+        app.run(host='127.0.0.1', port= 88, debug= True)
     elif len(sys.argv)> 1:
         # 线上调试, 随便传个参数
-        app.run(host='0.0.0.1', port= 80, debug= True)
+        app.run(host='0.0.0.1', port= 88, debug= True)
     else:
         # 线上正式版本, 用gunicorn启动
         from werkzeug.contrib.fixers import ProxyFix
         app.wsgi_app = ProxyFix(app.wsgi_app)
-        app.run(host='0.0.0.0', port= 80)
+        app.run(host='0.0.0.0', port= 88)
