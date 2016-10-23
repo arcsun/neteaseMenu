@@ -15,7 +15,7 @@ startTime = time.time()
 
 @app.route('/')
 def hello_world():
-    return 'Netease Menu!'
+    return redirect('/menu')
 
 
 @app.route('/menu/<int:day>', methods = ['GET', 'POST'])
