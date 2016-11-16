@@ -2,22 +2,20 @@
 from flask import Flask, redirect, render_template, request
 from codepy import menulog
 import anydbm as dbm
-import os
+import os, sys
 import urllib
 from datetime import datetime
 import time
-import threading
 
-# 线上版本的启动入口
 app = Flask(__name__)
 visit = 0
 visitHome = 0
-start = False
+startTime = time.time()
 
 
-@app.route('/')
-def hello_world():
-    return 'Netease Menu!'
+# @app.route('/')
+# def hello_world():
+#     return redirect('/menu')
 
 
 @app.route('/menu/<int:day>', methods = ['GET', 'POST'])
@@ -52,6 +50,21 @@ def menus(day=0):
     else:
         return url
 
+
+@app.route('/menus/bus')
+def bus():
+    # 班车路线页, 中转一下
+    globals()['visit'] += 1
+    menulog.info(u'访问菜单@%s'% visit)
+    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=9182"    # 这个地址隔段时间就会变一次，改为抓取？
+    try:
+        page = urllib.urlopen(url)
+        text = page.read().decode('utf-8')
+        return text
+    except:
+        return u'网页访问出错'
+
+
 def getWeekDayFromDay(daytime):
     """根据日期(如20160517)计算是星期几"""
     try:
@@ -76,9 +89,6 @@ def getWeekDayFromDay(daytime):
 
 @app.route('/menu')
 def menuList():
-    # 每次重启后应进入主页来启动访问计数
-    checkStart()
-
     globals()['visitHome'] += 1
     menulog.info(u'访问主页@%s'% visitHome)
     try:
@@ -92,7 +102,7 @@ def menuList():
         weekdays = {}
         for day in vals.keys():
             weekdays[day] = getWeekDayFromDay(day)
-        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays, visit= visit, visitHome= visitHome)
+        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays)
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
@@ -101,7 +111,18 @@ def menuList():
 
 @app.route('/menu/manage/hzmenu')
 def manage():
-    return render_template('manage.html')
+    seconds = int(time.time()- startTime)
+    days = seconds/(24*60*60)
+    if days >= 1:
+        seconds -= 24*60*60*days
+    hours = seconds/(60*60)
+    if hours >= 1:
+        seconds -= 60*60*hours
+    miniutes = seconds/60
+    if miniutes >= 1:
+        seconds -= 60*miniutes
+    timestr = u'本次已运行：%s天%s小时%s分钟%s秒'% (days, hours, miniutes, seconds)
+    return render_template('manage.html', visit= visit, visitHome= visitHome, timestr= timestr)
 
 
 @app.route('/menu/info')
@@ -168,7 +189,6 @@ def refreshlist():
             if day >= today:
                 future.append(day)
         future.sort()
-        print future
         db['future'] = str(future)
         msg = u'更新%s后已找到的菜单列表 from homepage'% today
         menulog.info(msg)
@@ -266,52 +286,17 @@ def readLog(lines= 0):
             f.close()
 
 
-def writeVisit():
-    # 每300s持久化一次访问计数
-    interval = 300
-    while True:
-        if time.time()% interval== 0:
-            try:
-                db = dbm.open('visitfile', 'w')
-                db['visit'] = str(visit)
-                db['visitHome'] =  str(visitHome)
-                db.close()
-                menulog.debug('write visit %s %s'% (visit, visitHome))
-            except:
-                menulog.debug('log visit error')
-            finally:
-                time.sleep(0.1)
-
-def readVisit():
-    # 每次启动时读取访问计数
-    try:
-        db = dbm.open('visitfile', 'c')
-        if not len(db):
-            # 15年10月到16年8月初, 点击大约是这些(从主页点到菜单页不计点击)
-            db['visit'] = '65000'
-            db['visitHome'] = '20000'
-        globals()['visit'] = int(db['visit'])
-        globals()['visitHome'] = int(db['visitHome'])
-        menulog.debug('init visit %s %s'% (visit, visitHome))
-    except:
-        menulog.debug('init visit error')
-
-
-def checkStart():
-    # 使用gunicorn时, 这几行放在下面不执行
-    if globals()['start']:
-        return
-    else:
-        readVisit()
-        t = threading.Thread(target= writeVisit, args= ())
-        t.setDaemon(True)
-        t.start()
-        globals()['start'] = True
-
-
 if __name__ == '__main__':
-    # 这两行用于gunicorn
-    from werkzeug.contrib.fixers import ProxyFix
-    app.wsgi_app = ProxyFix(app.wsgi_app)
-
-    app.run(host='0.0.0.0', port= 5000)
+    if sys.platform.startswith('win'):
+        # 本地调试
+        # import webbrowser
+        # webbrowser.open('http://127.0.0.1:80/menu')
+        app.run(host='127.0.0.1', port= 80, debug= True)
+    elif len(sys.argv)> 1:
+        # 线上调试, 随便传个参数
+        app.run(host='0.0.0.1', port= 80, debug= True)
+    else:
+        # 线上正式版本, 用gunicorn启动
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+        app.run(host='0.0.0.0', port= 80)
