@@ -13,9 +13,9 @@ visitHome = 0
 startTime = time.time()
 
 
-# @app.route('/')
-# def hello_world():
-#     return redirect('/menu')
+@app.route('/')
+def hello_world():
+    return redirect('/menu')
 
 
 @app.route('/menu/<int:day>', methods = ['GET', 'POST'])

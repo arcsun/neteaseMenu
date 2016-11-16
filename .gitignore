@@ -17,5 +17,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+/datafile
 *.idea
 *.log
