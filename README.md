@@ -1,6 +1,6 @@
-#网易(杭州)菜单 v2.6
+#网易(杭州)菜单 v2.7
 示例网址：
-http://59.111.96.36/menu
+www.crystalpot.com/menu
 
 微信公众号：neteasemenu  
 
