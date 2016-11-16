@@ -1,6 +1,6 @@
 #网易(杭州)菜单 v2.7
 示例网址：
-www.crystalpot.com/menu
+www.crystalpot.cn/menu
 
 微信公众号：neteasemenu  
 
