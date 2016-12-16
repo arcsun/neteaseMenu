@@ -1,6 +1,6 @@
 # #coding=utf-8
 import time
-import urllib
+import urllib, urllib2
 import re
 import anydbm as dbm
 from codepy import menulog
@@ -19,13 +19,27 @@ pattern_day = ur'月(\d+)日'
 pattern_day2 = ur'>(\d+)日'
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 datafile = 'datafile'
-startId = 37000
+startId = 47650
+
+
+def getWebContent(url):
+    try:
+        url += '&companyId=1'
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36 YiXin/4.8.3')
+        res = urllib2.urlopen(req)
+        html = res.read().decode('utf-8')
+        return html
+    except Exception as e:
+        menulog.debug(str(e))
+        return ''
+
 
 class Background:
     def __init__(self):
         self.frequency = 10800        # 间隔(秒)
         self.interval = 150           # 每次爬的id数量
-        self.back = 30                # 每次从self.startId - self.back开始查找，防止被占坑
+        self.back = 10                # 每次从self.startId - self.back开始查找，防止被占坑
         self.firstRun = True          # 是否在程序开始后先执行一次
 
         self.today = 0
@@ -80,8 +94,7 @@ class Background:
 
             while self.nowId - self.startId < self.interval:
                 menulog.info(u'开始查找: %d'% self.nowId)
-                page = urllib.urlopen(urlhead+ str(self.nowId))
-                text = page.read().decode('utf-8')
+                text = getWebContent(urlhead+ str(self.nowId))
                 if text.find(u'今日菜单') != -1:
                     self.empty = 0
                     try:
