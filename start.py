@@ -31,20 +31,21 @@ def hello_world():
     return redirect('/menu')
 
 
-# update：现在易信增加了对User-Agent的限制，必须使用中转的接口了
 @app.route('/menu/<int:day>', methods = ['GET', 'POST'])
 def menu(day=0):
     # 0今天, 1明天, 151202指定日期
-    from codepy import menu
     if request.method == 'POST':
         day = int(request.form['day'])
-    globals()['visit'] += 1
-    menulog.info(u'访问菜单@%s'% visit)
-    url = menu.Menu(day).process()
-    if url.startswith('http'):
-        return redirect(url)
-    else:
-        return url
+    # update：现在易信增加了对User-Agent的限制，必须使用中转的接口了
+    return redirect('/menus/%s'% day)
+    # from codepy import menu
+    # globals()['visit'] += 1
+    # menulog.info(u'访问菜单@%s'% visit)
+    # url = menu.Menu(day).process()
+    # if url.startswith('http'):
+    #     return redirect(url)
+    # else:
+    #     return url
 
 
 @app.route('/menus/<int:day>', methods = ['GET', 'POST'])
