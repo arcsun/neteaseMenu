@@ -19,7 +19,7 @@
             <h3><b>一周菜单</b></h3>
             {% if days and vals %}
                 {% for day in days %}
-                <h4>&nbsp;<a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[day] }}&companyId=1">{{ day }}&nbsp;&nbsp;{{weekdays.get(day)}}</a></h4>
+                <h4>&nbsp;<a href="/menus/{{ vals[day] }}">20{{ day }}&nbsp;&nbsp;{{weekdays.get(day)}}({{ vals[day] }})</a></h4>
                 {% endfor %}
             {% else %}
             <h4>暂无</h4>
@@ -50,7 +50,8 @@
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
             <h4><b>更新</b></h4>
-            <p>2016.10.23: 备案通过（历时18天）</p>
+            <p>2016.12.16: 易信修复外部可以直接访问的bug，改为通过服务器中转访问</p>
+            <p>2016.11.16: 备案通过（历时18天）</p>
             <p>2016.10.23: 更换服务器到网易蜂巢和一些改进</p>
             <h5><p><b>新功能预告：</b>菜名订阅和就餐窗口推荐</p></h5>
 
