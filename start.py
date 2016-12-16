@@ -6,6 +6,7 @@ import os, sys
 import urllib
 from datetime import datetime
 import time
+import urllib2
 
 app = Flask(__name__)
 visit = 0
@@ -13,11 +14,24 @@ visitHome = 0
 startTime = time.time()
 
 
+def getWebContent(url):
+    try:
+        req = urllib2.Request(url+ '&companyId=1')    # update:增加了这个参数
+        req.add_header('User-Agent', 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36 YiXin/4.8.3')
+        res = urllib2.urlopen(req)
+        html = res.read().decode('utf-8')
+        return html
+    except Exception as e:
+        menulog.debug(str(e))
+        return ''
+
+
 @app.route('/')
 def hello_world():
     return redirect('/menu')
 
 
+# update：现在易信增加了对User-Agent的限制，必须使用中转的接口了
 @app.route('/menu/<int:day>', methods = ['GET', 'POST'])
 def menu(day=0):
     # 0今天, 1明天, 151202指定日期
@@ -44,9 +58,7 @@ def menus(day=0):
     menulog.info(u'访问菜单@%s'% visit)
     url = menu.Menu(day).process()
     if url.startswith('http'):
-        page = urllib.urlopen(url)
-        text = page.read().decode('utf-8')
-        return text
+        return getWebContent(url)
     else:
         return url
 
@@ -58,9 +70,7 @@ def bus():
     menulog.info(u'访问菜单@%s'% visit)
     url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=9182"    # 这个地址隔段时间就会变一次，改为抓取？
     try:
-        page = urllib.urlopen(url)
-        text = page.read().decode('utf-8')
-        return text
+        return getWebContent(url)
     except:
         return u'网页访问出错'
 

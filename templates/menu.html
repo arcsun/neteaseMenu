@@ -19,7 +19,7 @@
             <h3><b>一周菜单</b></h3>
             {% if days and vals %}
                 {% for day in days %}
-                <h4>&nbsp;<a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[day] }}">{{ day }}&nbsp;&nbsp;{{weekdays.get(day)}}</a></h4>
+                <h4>&nbsp;<a href="http://numenplus.yixin.im/singleNewsWap.do?materialId={{ vals[day] }}&companyId=1">{{ day }}&nbsp;&nbsp;{{weekdays.get(day)}}</a></h4>
                 {% endfor %}
             {% else %}
             <h4>暂无</h4>
@@ -27,7 +27,7 @@
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
 
-            <h4><b>今日菜单</b>: <a href="/menu/0">crystalpot.cn/menu/0</a></h4>
+            <h4><b>今日菜单</b>: <a href="/menus/0">crystalpot.cn/menu/0</a></h4>
             <h4><b>微信公众号</b>: <a href="../static/qrcode.jpg">neteasemenu</a></h4>
             <h4><b>班车线路</b>: <a href="/menus/bus">crystalpot.cn/menus/bus</a></h4>
 
