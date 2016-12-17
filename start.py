@@ -25,6 +25,11 @@ def saveCache(key, content):
     cache[key] = content
 
 
+@app.route('/menu/cache')
+def getCache():
+    return cache.keys()
+
+
 def getWebContent(url):
     try:
         fname = url.split('?')[1].replace('=', '_')
