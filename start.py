@@ -27,7 +27,7 @@ def saveCache(key, content):
 
 @app.route('/menu/cache')
 def getCache():
-    return cache.keys()
+    return str(cache.keys())
 
 
 def getWebContent(url):
