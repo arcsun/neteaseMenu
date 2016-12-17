@@ -13,14 +13,30 @@ visit = 0
 visitHome = 0
 startTime = time.time()
 
+cache = {}
+
+
+def saveCache(key, content):
+    """
+    现在需要服务器中转才能访问，做个简单的缓存
+    """
+    if len(cache) >= 10:
+        cache.clear()
+    cache[key] = content
+
 
 def getWebContent(url):
     try:
-        req = urllib2.Request(url+ '&companyId=1')    # update:增加了这个参数
-        req.add_header('User-Agent', 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36 YiXin/4.8.3')
-        res = urllib2.urlopen(req)
-        html = res.read().decode('utf-8')
-        return html
+        fname = url.split('?')[1].replace('=', '_')
+        if cache.get(fname):
+            return cache.get(fname)
+        else:
+            req = urllib2.Request(url+ '&companyId=1')    # update:增加了这个参数
+            req.add_header('User-Agent', 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36 YiXin/4.8.3')
+            res = urllib2.urlopen(req)
+            html = res.read().decode('utf-8')
+            saveCache(fname, html)
+            return html
     except Exception as e:
         menulog.debug(str(e))
         return ''
