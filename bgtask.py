@@ -8,6 +8,9 @@ from codepy import menulog
 '''
 (python bgtask.py &)
 用于抓取菜单信息
+
+地址格式变更？这个可以直接访问
+http://wap.plus.yixin.im/wap/material/viewImageText?id=31613351
 '''
 
 pattern_title = r"<title>(.+)</title>"
