@@ -42,7 +42,7 @@ class Background:
     def __init__(self):
         self.frequency = 10800        # 间隔(秒)
         self.interval = 150           # 每次爬的id数量
-        self.back = 10                # 每次从self.startId - self.back开始查找，防止被占坑
+        self.back = 0                 # 每次从self.startId - self.back开始查找，防止被占坑
         self.firstRun = True          # 是否在程序开始后先执行一次
 
         self.today = 0
@@ -56,6 +56,7 @@ class Background:
         self.cache = {}               # {151019:15163}  # 日期:id
         self.maybe = []               # 爬到的报错的页面
         self.empty = 0
+        self.maxEmpty = 200           # 连续多少空页后中断; 近期总是跳着使用id
 
     def getTime(self):
         return int(time.time())
@@ -144,7 +145,8 @@ class Background:
                         self.empty = 0
                     else:
                         self.empty += 1
-                        if self.empty > 10:
+                        menulog.info('empty(%d) %d'% (self.empty, self.nowId))
+                        if self.empty > self.maxEmpty:
                             menulog.debug('break this round')
                             break
                 self.nowId += 1
