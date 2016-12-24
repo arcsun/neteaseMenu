@@ -56,7 +56,7 @@ class Background:
         self.cache = {}               # {151019:15163}  # 日期:id
         self.maybe = []               # 爬到的报错的页面
         self.empty = 0
-        self.maxEmpty = 200           # 连续多少空页后中断; 近期总是跳着使用id
+        self.maxEmpty = 100           # 连续多少空页后中断; 近期总是跳着使用id
 
     def getTime(self):
         return int(time.time())
