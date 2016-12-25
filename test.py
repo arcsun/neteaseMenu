@@ -69,15 +69,25 @@ def test():
 def test2(mid):
     req = urllib2.Request('http://numenplus.yixin.im/singleNewsWap.do?materialId=%s&companyId=1'% mid)
     req.add_header('User-Agent', 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36 YiXin/4.8.3')
-    res = urllib2.urlopen(req)
-    html = res.read().decode('utf-8')
-    return html, html.find(u'今日菜单') != -1, html.find(u'请求素材不存在') != -1
+    try:
+        res = urllib2.urlopen(req, timeout= 5)
+        html = res.read().decode('utf-8')
+        return html, html.find(u'今日菜单') != -1, html.find(u'请求素材不存在') != -1
+    except Exception as e:
+        print mid, e
+        return 'timeout', False, True
+
+
+
+for i in range(48276, 48500):
+    result = test2(i)
+    if result[1] is True:
+        key = 'menu'
+    elif result[2] is False:
+        key = 'exist'
+    else:
+        key = 'p'
+    print i, result[1], result[2], key
+
 
 # test()
-
-for i in range(48276, 48401):
-    result = test2(i)
-    print i, result[1], result[2]
-
-
-
