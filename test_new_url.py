@@ -3,6 +3,8 @@ import urllib
 import re
 import urllib2
 import cookielib
+from urllib2 import HTTPError
+
 
 """
 用来测试新的URL
@@ -20,41 +22,48 @@ Accept-Language: zh-CN,en-US;q=0.8
 Cookie: NTESplusSI=6B8336B65EE6B94C690E1E6A42C6691A.yx10.popo.infra.mail-8011; __utma=75741715.572861464.1482587990.1482587990.1482587990.1; __utmb=75741715.2.10.1482587990; __utmc=75741715; __utmz=75741715.1482587990.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)
 """
 
-UA_yixin = 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36 YiXin/4.8.3'
-UA_uc = 'Mozilla/5.0 (Linux; Android 6.0; MZ-PRO 6 Build/MRA58K) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/45.0.2454.94 Mobile Safari/537.36'
-cookie_uc = 'NTESplusSI=6B8336B65EE6B94C690E1E6A42C6691A.yx10.popo.infra.mail-8011; __utma=75741715.572861464.1482587990.1482587990.1482587990.1; __utmb=75741715.2.10.1482587990; __utmc=75741715; __utmz=75741715.1482587990.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)'
+ua_yixin = 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36'
+accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
 
-
-def test():
+def test(tid, save= False):
     try:
-        urlhead = 'http://wap.plus.yixin.im/wap/material/viewImageText?id='
-        startId = 31613351
-        nowId = startId
-
-        req = urllib2.Request(urlhead+ str(nowId))
-        req.add_header('User-Agent', UA_uc)
-
-        # req.add_header('Accept-Encoding', 'gzip, deflate')
-        # req.add_header('Accept-Language', 'zh-CN,en-US;q=0.8')
-        # req.add_header('Upgrade-Insecure-Requests', '1')
-        # req.add_header('x-wap-profile', 'http://218.249.47.94/UAProfile/CMCC/MT6797_UAprofile.xml')
-        # req.add_header('Cookie', cookie_uc)
+        url = 'http://wap.plus.yixin.im/wap/material/viewImageText?id=%s'% tid
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', ua_yixin)       # 易信外会有个广告
+        req.add_header('Accept', accept)             # 易信会检测这个
 
         res = urllib2.urlopen(req)
-        text = res.read().decode('utf-8')
+        text = res.read()
+        t = text.decode('utf-8')        # 这里print会报错
+        if save:
+            f = open('page.html', 'w+')
+            f.write(text)
+            f.close()
 
-        print text
-        if text.find(u'今日菜单') != -1:
-            print 'find'
+        if t.find(u'今日菜单') != -1:
+            return '%s find++++++++++++++++++'% tid, True
         else:
-            print 'not find'
+            return '%s not find'%tid, False
 
     except Exception as e:
-        print e
+        return '%s error--------------'% tid, False
 
 
-test()
+# 这个id似乎是固定的, 周五是31613351
+pageList = {
+    1: 31415423,
+    5: 31613351,
 
-# page = urllib.urlopen('http://wap.plus.yixin.im/wap/material/viewImageText?id=31613351')
-# text = page.read().decode('utf-8')
-# print text
+    6: 31415424,  # 待定
+}
+
+# test(pageList.get(5))
+
+result = []
+for i in range(31431985, pageList.get(5)):
+    r = test(i)
+    if r[1]:
+        result.append(i)
+    print r[0]
+
+print result
