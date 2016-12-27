@@ -40,7 +40,7 @@ def test(tid, save= False):
             f.write(text)
             f.close()
 
-        if t.find(u'今日菜单') != -1:
+        if t.find(u'今日菜单') != -1 and t.find(u'本帮菜') != -1:
             return '%s find++++++++++++++++++'% tid, True
         else:
             return '%s not find'%tid, False
@@ -49,21 +49,24 @@ def test(tid, save= False):
         return '%s error--------------'% tid, False
 
 
-# 这个id似乎是固定的, 周五是31613351
+# 这个id似乎是固定的
 pageList = {
     1: 31415423,
+    2: 31704345,
+    3: 31704346,
     5: 31613351,
-
     6: 31415424,  # 待定
 }
 
-# test(pageList.get(5))
+# print test(pageList.get(2))
 
 result = []
-for i in range(31431985, pageList.get(5)):
+for i in range(pageList.get(3)+1, pageList.get(3)+2000):
     r = test(i)
     if r[1]:
         result.append(i)
+        print r[0], r[1]
+        break
     print r[0]
 
-print result
+# print result
