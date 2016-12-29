@@ -54,19 +54,20 @@ pageList = {
     1: 31415423,
     2: 31704345,
     3: 31704346,
+    4: 31700488,
     5: 31613351,
     6: 31415424,  # 待定
 }
 
-# print test(pageList.get(2))
-
-result = []
-for i in range(pageList.get(3)+1, pageList.get(3)+2000):
-    r = test(i)
-    if r[1]:
-        result.append(i)
-        print r[0], r[1]
-        break
-    print r[0]
+print test(pageList.get(4))
+#
+# result = []
+# for i in range(pageList.get(3)+1, pageList.get(3)+2000):
+#     r = test(i)
+#     if r[1]:
+#         result.append(i)
+#         print r[0], r[1]
+#         break
+#     print r[0]
 
 # print result
