@@ -79,7 +79,7 @@ def test2(mid):
 
 
 
-for i in range(48276, 48500):
+for i in range(48750, 48999):
     result = test2(i)
     if result[1] is True:
         key = 'menu'
