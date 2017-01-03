@@ -90,7 +90,7 @@ def bus():
     # 班车路线页, 中转一下
     globals()['visit'] += 1
     menulog.info(u'访问菜单@%s'% visit)
-    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=9182"    # 这个地址隔段时间就会变一次，改为抓取？
+    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=10490"    # 这个地址隔段时间就会变一次，改为抓取？
     try:
         return getWebContent(url)
     except:
