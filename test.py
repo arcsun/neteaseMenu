@@ -78,16 +78,34 @@ def test2(mid):
         return 'timeout', False, True
 
 
+def testBus(mid):
+    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=%s"%mid
+    req = urllib2.Request(url+ '&companyId=1')
+    req.add_header('User-Agent', 'Mozilla/5.0 (Linux; Android 6.0; PRO 6 Build/MRA58K; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/44.0.2403.130 Mobile Safari/537.36 YiXin/4.8.3')
+    res = urllib2.urlopen(req)
+    html = res.read().decode('utf-8')
+    return html
 
-for i in range(48750, 48999):
-    result = test2(i)
-    if result[1] is True:
-        key = 'menu'
-    elif result[2] is False:
-        key = 'exist'
+
+
+# for i in range(48750, 48999):
+#     result = test2(i)
+#     if result[1] is True:
+#         key = 'menu'
+#     elif result[2] is False:
+#         key = 'exist'
+#     else:
+#         key = 'p'
+#     print i, result[1], result[2], key
+
+
+for i in range(10490, 11000):
+    r = testBus(i)
+    if r.find(u'杭州网易班车线路') != -1:
+        print i, True, '+++++++++++'
+    elif r.find(u'请求多图文素材不存在') != -1:
+        break
     else:
-        key = 'p'
-    print i, result[1], result[2], key
+        print i
 
 
-# test()
