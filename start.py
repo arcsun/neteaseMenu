@@ -7,13 +7,29 @@ import urllib
 from datetime import datetime
 import time
 import urllib2
+import hashlib
+
 
 app = Flask(__name__)
 visit = 0
 visitHome = 0
 startTime = time.time()
+token = 'hzsunzhengyu'    # 微信公众号的token，自行设置
 
 cache = {}
+
+def checkSign(signature, timestamp, nonce):
+    # 微信签名
+    args = []
+    args.append("token=%s" % token)
+    args.append("timestamp=%s" % timestamp)
+    args.append("nonce=%s" % nonce)
+    args = sorted(args)
+    raw = "&".join(args)
+    sign = hashlib.sha1(raw).hexdigest()
+    menulog.info(signature)
+    menulog.info(sign)
+    return signature == sign
 
 
 def saveCache(key, content):
@@ -50,6 +66,21 @@ def getWebContent(url):
 @app.route('/')
 def hello_world():
     return redirect('/menu')
+
+
+@app.route('/menus/sign')
+def weixin_sign():
+    # 微信配置认证
+    menulog.info('weixin sign')
+    signature = request.args.get('signature', '')
+    timestamp = request.args.get('timestamp', '')
+    nonce = request.args.get('nonce', '')
+    echostr = request.args.get('echostr', '')
+    valid = checkSign(signature, timestamp, nonce)
+    if valid:
+        return echostr
+    else:
+        return ""
 
 
 @app.route('/menu/<int:day>', methods = ['GET', 'POST'])
