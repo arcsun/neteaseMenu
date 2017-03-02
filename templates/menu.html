@@ -45,14 +45,19 @@
             <p>>=151027: 查询指定日期的菜单</p>
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
-            <h4>源码: <a href="https://github.com/arcsun/neteaseMenu">github</a></h4>
-            <h4>报错: <a href="mailto:hzsunzhengyu@corp.netease.com">hzsunzhengyu@corp.netease.com</a></h4>
+            <h4><b>maybe列表</b></h4>
+            {% if maybe%}
+                {% for m in maybe %}
+                <h4>&nbsp;<a href="/menus/{{ m }}">{{ m }}</a></h4>
+                {% endfor %}
+            {% else %}
+            <h4>暂无</h4>
+            {% endif %}
+
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
-            <h4><b>更新</b></h4>
-            <p>2016.12.16: 易信修复外部可以直接访问的bug，改为通过服务器中转访问</p>
-            <p>2016.11.16: 备案通过（历时18天）</p>
-            <p>2016.10.23: 更换服务器到网易蜂巢和一些改进</p>
+            <h4>源码: <a href="https://github.com/arcsun/neteaseMenu">github</a></h4>
+            <h4>报错: <a href="mailto:hzsunzhengyu@corp.netease.com">hzsunzhengyu@corp.netease.com</a></h4>
 
             <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
             <p><a href="http://www.miitbeian.gov.cn">备案号：浙ICP备16041175号</a></p>

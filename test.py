@@ -88,24 +88,24 @@ def testBus(mid):
 
 
 
-# for i in range(48750, 48999):
-#     result = test2(i)
-#     if result[1] is True:
-#         key = 'menu'
-#     elif result[2] is False:
-#         key = 'exist'
-#     else:
-#         key = 'p'
-#     print i, result[1], result[2], key
-
-
-for i in range(10490, 11000):
-    r = testBus(i)
-    if r.find(u'杭州网易班车线路') != -1:
-        print i, True, '+++++++++++'
-    elif r.find(u'请求多图文素材不存在') != -1:
-        break
+for i in range(51770, 52100):
+    result = test2(i)
+    if result[1] is True:
+        key = 'menu'
+    elif result[2] is False:
+        key = 'exist'
     else:
-        print i
+        key = 'p'
+    print i, result[1], result[2], key
+
+#
+# for i in range(10490, 11000):
+#     r = testBus(i)
+#     if r.find(u'杭州网易班车线路') != -1:
+#         print i, True, '+++++++++++'
+#     elif r.find(u'请求多图文素材不存在') != -1:
+#         break
+#     else:
+#         print i
 
 

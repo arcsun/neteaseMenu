@@ -94,6 +94,7 @@ class Background:
             self.cache = eval(db['cache'])
             self.maybe = eval(db['maybe'])
             self.nowId = self.startId
+
             self.lastQuery = self.getTime()        # 保存最后搜索时间
 
             while self.nowId - self.startId < self.interval:
@@ -132,9 +133,7 @@ class Background:
                         self.cache[thisday] = self.nowId
                         menulog.info('find %d'% self.nowId)
                     except (IndexError, ):
-                        if text.find(u'祝您用餐愉快') and text.find(u'农历'):
-                            menulog.debug('gz menu')
-                        elif self.nowId not in self.maybe:
+                        if self.nowId not in self.maybe:
                             self.maybe.append(self.nowId)
                             menulog.debug('IndexError add maybe')
 

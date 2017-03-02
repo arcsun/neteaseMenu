@@ -159,6 +159,8 @@ def menuList():
         db = dbm.open('datafile', 'c')
         cache = eval(db['cache'])
         future = eval(db['future'])
+        maybe = eval(db['maybe'])
+        maybe.sort()
         vals = {}
         for day in future:
             vals[day] = cache[day]
@@ -166,7 +168,7 @@ def menuList():
         weekdays = {}
         for day in vals.keys():
             weekdays[day] = getWeekDayFromDay(day)
-        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays)
+        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays, maybe= maybe)
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
