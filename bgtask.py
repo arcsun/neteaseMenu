@@ -22,7 +22,7 @@ pattern_day = ur'月(\d+)日'
 pattern_day2 = ur'>(\d+)日'
 urlhead = 'http://numenplus.yixin.im/singleNewsWap.do?materialId='
 datafile = 'datafile'
-startId = 47650
+startId = 53370
 
 
 def getWebContent(url):
@@ -100,7 +100,7 @@ class Background:
             while self.nowId - self.startId < self.interval:
                 menulog.info(u'开始查找: %d'% self.nowId)
                 text = getWebContent(urlhead+ str(self.nowId))
-                if text.find(u'今日菜单') != -1:
+                if text.find(u'今日菜单') != -1 and text.find(u'本帮菜') != -1:
                     self.empty = 0
                     try:
                         year = re.findall(pattern_year, text)[0]
