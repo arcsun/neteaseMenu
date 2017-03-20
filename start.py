@@ -353,7 +353,7 @@ def readLog(lines= 0):
 
 
 # temp
-@app.route('/api/v1/verify')
+@app.route('/api/v1/verify', methods=['POST', 'GET'])
 def mockYidun():
     return "true"
 
