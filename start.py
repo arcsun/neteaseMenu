@@ -352,6 +352,12 @@ def readLog(lines= 0):
             f.close()
 
 
+# temp
+@app.route('/api/v1/verify')
+def mockYidun():
+    return "true"
+
+
 if __name__ == '__main__':
     if sys.platform.startswith('win'):
         # 本地调试
