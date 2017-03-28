@@ -355,7 +355,7 @@ def readLog(lines= 0):
 # temp
 @app.route('/api/v1/verify', methods=['POST', 'GET'])
 def mockYidun():
-    return '{"msg":0,"result":true,"c":1,"error":0}'
+    return '{"msg":"success","result":true,"c":1,"error":0}'
 
 
 if __name__ == '__main__':
