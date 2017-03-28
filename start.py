@@ -1,5 +1,5 @@
 #coding=utf-8
-from flask import Flask, redirect, render_template, request
+from flask import Flask, redirect, render_template, request, Response
 from codepy import menulog
 import anydbm as dbm
 import os, sys
@@ -355,7 +355,9 @@ def readLog(lines= 0):
 # temp
 @app.route('/api/v1/verify', methods=['POST', 'GET'])
 def mockYidun():
-    return '{"msg":"success","result":true,"c":1,"error":0}'
+    resp = Response('{"msg":"success","result":true,"c":1,"error":0}')
+    resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    return resp
 
 
 if __name__ == '__main__':
