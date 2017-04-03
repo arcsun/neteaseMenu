@@ -50,9 +50,9 @@ def addOne(page= 1):
         if not s:
             globals()['s'] = shelve.open('visit_count.dat', writeback=True)
         if page == 0:
-            s['count_home'] = 0 if not s.get('count_home') else s['count_home']+1
+            s['count_home'] = 0 if s.get('count_home') is None else s['count_home']+1
         elif page == 1:
-            s['count_menu'] = 0 if not s.get('count_menu') else s['count_menu']+1
+            s['count_menu'] = 0 if s.get('count_menu') is None else s['count_menu']+1
         s.sync()
     except Exception as e:
         menulog.debug(e)

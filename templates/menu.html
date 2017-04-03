@@ -11,64 +11,71 @@
 <body style='font-family: "Helvetica Neue", Helvetica, "Microsoft YaHei", Arial, sans-serif'>
 
 <div class="container">
-	<div class="row clearfix">
-		<div class="col-md-1 column">
-		</div>
+    <div class="row clearfix">
+        <div class="col-md-1 column">
+        </div>
 
-		<div class="col-md-10 column">
+        <div class="col-md-10 column">
             <h3><b>一周菜单</b></h3>
             {% if days and vals %}
                 {% for day in days %}
-                <h4>&nbsp;<a href="/menus/{{ vals[day] }}">20{{ day }}&nbsp;&nbsp;{{weekdays.get(day)}}({{ vals[day] }})</a></h4>
+                    <h4>&nbsp;<a
+                            href="/menus/{{ vals[day] }}">20{{ day }}&nbsp;&nbsp;{{ weekdays.get(day) }}({{ vals[day] }})</a>
+                    </h4>
                 {% endfor %}
             {% else %}
-            <h4>暂无</h4>
+                <h4>暂无</h4>
             {% endif %}
 
-            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>
+            <h4>总访问量:&nbsp;{{ total[0]+total[1] }}</h4>
 
             <h4><b>今日菜单</b>: <a href="/menus/0">crystalpot.cn/menu/0</a></h4>
             <h4><b>微信公众号</b>: <a href="../static/qrcode.jpg">neteasemenu</a></h4>
             <h4><b>班车线路</b>: <a href="/menus/bus">crystalpot.cn/menus/bus</a></h4>
 
-            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>
 
             <form action="/menu/0" method="post">
-              <input type="text" name="day" />
-              <input type="submit" value="自定义查询" />
+                <input type="text" name="day"/>
+                <input type="submit" value="自定义查询"/>
             </form>
 
             <h5>参数说明:</h5>
+
             <p>0-99: 多少天之后的菜单(如0今天、1明天)</p>
+
             <p>100-9999: 跳转到可能的菜单页(一般没用)</p>
+
             <p>10000-99999: 跳转到对应id的易信页</p>
+
             <p>>=151027: 查询指定日期的菜单</p>
 
-            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>
             <h4><b>maybe列表</b></h4>
-            {% if maybe%}
+            {% if maybe %}
                 {% for m in maybe %}
-                <h4>&nbsp;<a href="/menus/{{ m }}">{{ m }}</a></h4>
+                    <h4>&nbsp;<a href="/menus/{{ m }}">{{ m }}</a></h4>
                 {% endfor %}
             {% else %}
-            <h4>暂无</h4>
+                <h4>暂无</h4>
             {% endif %}
 
 
-            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>
             <h4>源码: <a href="https://github.com/arcsun/neteaseMenu">github</a></h4>
             <h4>报错: <a href="mailto:hzsunzhengyu@corp.netease.com">hzsunzhengyu@corp.netease.com</a></h4>
 
-            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;" />
+            <hr style="height:1px;border:none;border-top:1px dashed #0066CC;"/>
             <p><a href="http://www.miitbeian.gov.cn">备案号：浙ICP备16041175号</a></p>
 
 
-		</div>
+        </div>
 
 
-		<div class="col-md-1 column">
-		</div>
-	</div>
+        <div class="col-md-1 column">
+        </div>
+    </div>
 </div>
 
 </body>
