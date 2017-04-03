@@ -2,6 +2,7 @@
 from flask import Flask, redirect, render_template, request, Response
 from codepy import menulog
 import anydbm as dbm
+import shelve
 import os, sys
 import urllib
 from datetime import datetime
@@ -17,6 +18,8 @@ startTime = time.time()
 token = 'hzsunzhengyu'    # 微信公众号的token，自行设置
 
 cache = {}
+s = shelve.open('visit_count.dat', writeback=True)
+
 
 def checkSign(signature, timestamp, nonce):
     # 微信签名
@@ -39,6 +42,21 @@ def saveCache(key, content):
     if len(cache) >= 10:
         cache.clear()
     cache[key] = content
+
+
+def addOne(page= 1):
+    """访问计数"""
+    try:
+        if not s:
+            globals()['s'] = shelve.open('visit_count.dat', writeback=True)
+        if page == 0:
+            s['count_home'] = 0 if not s.get('count_home') else s['count_home']+1
+        elif page == 1:
+            s['count_menu'] = 0 if not s.get('count_menu') else s['count_menu']+1
+        s.sync()
+    except Exception as e:
+        menulog.debug(e)
+
 
 
 @app.route('/menu/cache')
@@ -108,6 +126,7 @@ def menus(day=0):
     from codepy import menu
     if request.method == 'POST':
         day = int(request.form['day'])
+    addOne(1)
     globals()['visit'] += 1
     menulog.info(u'访问菜单@%s'% visit)
     url = menu.Menu(day).process()
@@ -120,9 +139,10 @@ def menus(day=0):
 @app.route('/menus/bus')
 def bus():
     # 班车路线页, 中转一下
+    addOne(1)
     globals()['visit'] += 1
     menulog.info(u'访问菜单@%s'% visit)
-    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=11031"    # 这个地址隔段时间就会变一次，改为抓取？
+    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=11031"    # 更新周期很长，暂手动更新
     try:
         return getWebContent(url)
     except:
@@ -151,8 +171,10 @@ def getWeekDayFromDay(daytime):
         menulog.debug(u'获取星期几错误')
         return u''
 
+
 @app.route('/menu')
 def menuList():
+    addOne(0)
     globals()['visitHome'] += 1
     menulog.info(u'访问主页@%s'% visitHome)
     try:
@@ -168,7 +190,7 @@ def menuList():
         weekdays = {}
         for day in vals.keys():
             weekdays[day] = getWeekDayFromDay(day)
-        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays, maybe= maybe)
+        return render_template('menu.html', vals= vals, days= future, weekdays= weekdays, maybe= maybe, total=(s.get('count_menu'), s.get('count_home')))
     except (IOError, KeyError):
         msg = u'缓存读取错误'
         menulog.info(msg)
@@ -188,7 +210,7 @@ def manage():
     if miniutes >= 1:
         seconds -= 60*miniutes
     timestr = u'本次已运行：%s天%s小时%s分钟%s秒'% (days, hours, miniutes, seconds)
-    return render_template('manage.html', visit= visit, visitHome= visitHome, timestr= timestr)
+    return render_template('manage.html', visit= visit, visitHome= visitHome, timestr= timestr, total=(s.get('count_menu'), s.get('count_home')))
 
 
 @app.route('/menu/info')
