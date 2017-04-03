@@ -49,6 +49,8 @@ def addOne(page= 1):
     try:
         if not s:
             globals()['s'] = shelve.open('visit_count.dat', writeback=True)
+        s['count_home'] = 13184
+        s['count_menu'] = 94110
         if page == 0:
             s['count_home'] = 0 if s.get('count_home') is None else s['count_home']+1
         elif page == 1:
