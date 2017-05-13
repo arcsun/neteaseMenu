@@ -43,4 +43,7 @@ if __name__ == '__main__':
         app.run(host='127.0.0.1', port= 8080, debug= True, threaded= True)
     else:
         # 线上正式版本
-        app.run(host='0.0.0.0', port= 5050, threaded= True)
+        # app.run(host='0.0.0.0', port= 5050, threaded= True)
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+        app.run(host='0.0.0.0', port= 5050)
