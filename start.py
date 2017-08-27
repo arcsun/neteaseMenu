@@ -347,6 +347,7 @@ def readLog(lines= 0):
     f = None
     try:
         files = os.listdir('./')
+        files.sort()
         logs = []
         for fname in files:
             if fname.startswith('menu.log'):
