@@ -142,7 +142,7 @@ def bus():
     addOne(1)
     globals()['visit'] += 1
     menulog.info(u'访问菜单@%s'% visit)
-    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=13595"    # 更新周期很长，暂手动更新
+    url = "http://numenplus.yixin.im/multiNewsWap.do?multiNewsId=14127"    # 更新周期很长，暂手动更新
     try:
         return getWebContent(url)
     except:
@@ -347,6 +347,7 @@ def readLog(lines= 0):
     f = None
     try:
         files = os.listdir('./')
+        files.sort()
         logs = []
         for fname in files:
             if fname.startswith('menu.log'):
