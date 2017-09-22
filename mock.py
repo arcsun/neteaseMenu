@@ -35,8 +35,8 @@ def mockYidun():
 
 
 @app.route('/api/v2/verify', methods=['POST', 'GET'])
-def mockYidun():
-    # 易盾滑块后端验证
+def mockYidun2():
+    # 易盾滑块后端验证v2
     resp = Response('{"msg":"success","result":true,"c":1,"error":0}')
     resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
     return resp
