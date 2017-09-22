@@ -375,18 +375,18 @@ def readLog(lines= 0):
             f.close()
 
 
-# @app.route('/api/v1/verify', methods=['POST', 'GET'])
-# def mockYidun():
-#     resp = Response('{"msg":"success","result":true,"c":1,"error":0}')
-#     resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
-#     return resp
-#
-#
-# @app.route('/api/v2/verify', methods=['POST', 'GET'])
-# def mockYidun2():
-#     resp = Response('{"msg":"success","result":true,"c":1,"error":0}')
-#     resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
-#     return resp
+@app.route('/api/v1/verify', methods=['POST', 'GET'])
+def mockYidun():
+    resp = Response('{"msg":"success","result":true,"c":1,"error":0}')
+    resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    return resp
+
+
+@app.route('/api/v2/verify', methods=['POST', 'GET'])
+def mockYidun2():
+    resp = Response('{"msg":"success","result":true,"c":1,"error":0}')
+    resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    return resp
 
 
 if __name__ == '__main__':
