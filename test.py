@@ -88,7 +88,7 @@ def testBus(mid):
 
 
 
-for i in range(55340, 55600):
+for i in range(70222, 70400):
     result = test2(i)
     if result[1] is True:
         key = 'menu'

@@ -34,6 +34,14 @@ def mockYidun():
     return resp
 
 
+@app.route('/api/v2/verify', methods=['POST', 'GET'])
+def mockYidunV2():
+    # 易盾滑块后端验证
+    resp = Response('{"msg":"success","result":true,"c":1,"error":0}')
+    resp.headers['Content-Type'] = 'application/json;charset=UTF-8'
+    return resp
+
+
 
 if __name__ == '__main__':
     if sys.platform.startswith('win'):
